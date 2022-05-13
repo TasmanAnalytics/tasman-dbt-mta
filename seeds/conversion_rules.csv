@@ -1,0 +1,3 @@
+model,conversion,rule,part,attribute,relation,value
+1,1,1,1,snowplow.conversion_type,=,transaction
+2,1,1,1,snowplow.conversion_type,=,transaction

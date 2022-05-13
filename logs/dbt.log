@@ -1,0 +1,20 @@
+
+
+============================== 2022-05-13 10:53:33.894965 | 6f03745a-13ea-4f04-a614-78edf2dabf0b ==============================
+10:53:33.894965 [info ] [MainThread]: Running with dbt=1.0.4
+10:53:33.895156 [debug] [MainThread]: running dbt with arguments Namespace(record_timing_info=None, debug=None, log_format=None, write_json=None, use_colors=None, printer_width=None, warn_error=None, version_check=None, partial_parse=None, single_threaded=False, use_experimental_parser=None, static_parser=None, profiles_dir='/Users/tomshelley/.dbt', send_anonymous_usage_stats=None, fail_fast=None, event_buffer_size=None, project_dir=None, profile=None, target=None, vars='{}', log_cache_events=False, config_dir=False, defer=None, state=None, cls=<class 'dbt.task.debug.DebugTask'>, which='debug', rpc_method=None)
+10:53:33.895239 [debug] [MainThread]: Tracking: do not track
+
+
+============================== 2022-05-13 10:53:56.405502 | 4cfc380a-5b6d-4b77-bd2f-b942fd216b66 ==============================
+10:53:56.405502 [info ] [MainThread]: Running with dbt=1.0.4
+10:53:56.405690 [debug] [MainThread]: running dbt with arguments Namespace(record_timing_info=None, debug=None, log_format=None, write_json=None, use_colors=None, printer_width=None, warn_error=None, version_check=None, partial_parse=None, single_threaded=False, use_experimental_parser=None, static_parser=None, profiles_dir='/Users/tomshelley/.dbt', send_anonymous_usage_stats=None, fail_fast=None, event_buffer_size=None, project_dir=None, profile=None, target=None, vars='{}', log_cache_events=False, project_name='tasman-dbt-mta', skip_profile_setup=False, defer=None, state=None, cls=<class 'dbt.task.init.InitTask'>, which='init', rpc_method=None)
+10:53:56.405772 [debug] [MainThread]: Tracking: do not track
+10:54:17.372048 [debug] [MainThread]: Starter project path: /Users/tomshelley/.pyenv/versions/3.9.6/lib/python3.9/site-packages/dbt/include/starter_project
+
+
+============================== 2022-05-13 10:54:55.582158 | edb8b7ee-6b17-4e02-93ee-876188512a87 ==============================
+10:54:55.582158 [info ] [MainThread]: Running with dbt=1.0.4
+10:54:55.582356 [debug] [MainThread]: running dbt with arguments Namespace(record_timing_info=None, debug=None, log_format=None, write_json=None, use_colors=None, printer_width=None, warn_error=None, version_check=None, partial_parse=None, single_threaded=False, use_experimental_parser=None, static_parser=None, profiles_dir='/Users/tomshelley/.dbt', send_anonymous_usage_stats=None, fail_fast=None, event_buffer_size=None, project_dir=None, profile=None, target=None, vars='{}', log_cache_events=False, project_name='tasman_dbt_mta', skip_profile_setup=False, defer=None, state=None, cls=<class 'dbt.task.init.InitTask'>, which='init', rpc_method=None)
+10:54:55.582439 [debug] [MainThread]: Tracking: do not track
+10:54:55.592124 [info ] [MainThread]: A project called tasman_dbt_mta already exists here.

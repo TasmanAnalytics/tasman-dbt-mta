@@ -86,7 +86,7 @@ rules_bitsums as ( --calculates the sum of the of the bits per rule needed to va
 
     select
         model_id,
-        conversion,
+        conversion_category,
         rule,
         power(2, max(part)) - 1 as bitsum
 
@@ -95,12 +95,12 @@ rules_bitsums as ( --calculates the sum of the of the bits per rule needed to va
 
     group by
         model_id,
-        conversion,
+        conversion_category,
         rule
 
     order by
         model_id,
-        conversion,
+        conversion_category,
         rule
 ),
 
@@ -113,7 +113,7 @@ matched_parts as ( --returns all matched parts of the rules from the event strea
         event_attributes.attribute,
         event_attributes.value,
         rules.model_id,
-        rules.conversion,
+        rules.conversion_category,
         rules.rule,
         rules.part,
         rules.bit
@@ -164,14 +164,14 @@ matched_parts as ( --returns all matched parts of the rules from the event strea
         )
 ),
 
-matched_rules as ( -- returns fulfilled rules which indicates that an event matches a conversion
+matched_rules as ( -- returns fulfilled rules which indicates that an event matches a conversion category
 
     select
         matched_parts.conversion_segmentation_id,
         matched_parts.conversion_event_id,
         matched_parts.conversion_timestamp,
         matched_parts.model_id,
-        matched_parts.conversion,
+        matched_parts.conversion_category,
         matched_parts.rule,
         sum(matched_parts.bit) as bits,
         rules_bitsums.bitsum
@@ -180,7 +180,7 @@ matched_rules as ( -- returns fulfilled rules which indicates that an event matc
         matched_parts
         inner join rules_bitsums on
             rules_bitsums.model_id = matched_parts.model_id
-            and rules_bitsums.conversion = matched_parts.conversion
+            and rules_bitsums.conversion_category = matched_parts.conversion_category
             and rules_bitsums.rule = matched_parts.rule
 
     group by
@@ -188,7 +188,7 @@ matched_rules as ( -- returns fulfilled rules which indicates that an event matc
         matched_parts.conversion_event_id,
         matched_parts.conversion_timestamp,
         matched_parts.model_id,
-        matched_parts.conversion,
+        matched_parts.conversion_category,
         matched_parts.rule,
         rules_bitsums.bitsum
 
@@ -196,14 +196,14 @@ matched_rules as ( -- returns fulfilled rules which indicates that an event matc
         bits = rules_bitsums.bitsum
 ),
 
-matched_categories as (-- Return one event record per conversion (for the case where an event matches multiple rules within a conversion)
+matched_categories as (-- Return one event record per conversion category (for the case where an event matches multiple rules within a conversion category)
 
     select distinct
         conversion_segmentation_id,
         conversion_event_id,
         conversion_timestamp,
         model_id,
-        conversion
+        conversion_category
 
     from
         matched_rules

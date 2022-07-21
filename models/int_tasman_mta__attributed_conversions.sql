@@ -15,7 +15,7 @@ joined_conversion_events as (
         conversion_events.conversion_event_id,
         conversion_events.conversion_timestamp,
         conversion_events.model_id,
-        conversion_events.conversion,
+        conversion_events.conversion_category,
         attributed_touches.touch_event_id,
         attributed_touches.touch_timestamp,
         attributed_touches.touch_category,

@@ -80,9 +80,10 @@ conversion_intervals as (
         matched_touches.conversion_timestamp,
         case
             when matched_touches.conversion is not null
-            then datediff(second, matched_touches.touch_timestamp, matched_touches.conversion_timestamp)
+            then {{ dbt_utils.datediff("matched_touches.touch_timestamp", "matched_touches.conversion_timestamp", 'second') }}
         end as interval_convert,
-        attribution_windows.att_window
+        attribution_windows.att_window,
+        attribution_windows.time_seconds
 
     from
         matched_touches
@@ -90,10 +91,18 @@ conversion_intervals as (
         attribution_windows
         on matched_touches.model_id = attribution_windows.model_id
     
+),
+
+windowed_touches as (
+    select
+        *
+    from
+        conversion_intervals
     where
-        interval_convert < attribution_windows.time_seconds
-        or attribution_windows.time_seconds = 0
+        interval_convert < time_seconds
+        or time_seconds = 0
         or interval_convert is null
+
 ),
 
 touch_events as (
@@ -111,11 +120,11 @@ touch_events as (
         interval_convert,
         case
             when conversion is not null
-            then datediff(second, lag(touch_timestamp) over (partition by conversion_event_id, model_id order by touch_timestamp), touch_timestamp)
+            then {{ dbt_utils.datediff("lag(touch_timestamp) over (partition by conversion_event_id, model_id order by touch_timestamp)", "touch_timestamp", 'second') }}
         end as interval_pre,
         case
             when conversion is not null
-            then datediff(second, touch_timestamp, lead(touch_timestamp, 1, conversion_timestamp) over (partition by conversion_event_id, model_id order by touch_timestamp))
+            then {{ dbt_utils.datediff("touch_timestamp", "lead(touch_timestamp, 1, conversion_timestamp) over (partition by conversion_event_id, model_id order by touch_timestamp)", 'second') }}
         end as interval_post,
         case
             when conversion is not null
@@ -123,16 +132,16 @@ touch_events as (
         end as convert_touch_count,
         case
             when conversion is not null
-            then rank() over (partition by conversion_event_id, model_id order by touch_timestamp rows unbounded preceding)
+            then rank() over (partition by conversion_event_id, model_id order by touch_timestamp)
         end as convert_seq_up,
         case
             when conversion is not null
-            then rank() over (partition by conversion_event_id, model_id order by touch_timestamp desc rows unbounded preceding)
+            then rank() over (partition by conversion_event_id, model_id order by touch_timestamp desc)
         end as convert_seq_down
         
 
     from
-        conversion_intervals
+        windowed_touches
 ),
 
 touch_taxonomy as (
@@ -223,12 +232,12 @@ matched_parts as (
             and touch_attributes.model_id = attribution_parts.model_id
 
     where
-        (attribution_parts.relation = '=' and touch_attributes.value = attribution_parts.value)
-        or (attribution_parts.relation = '>=' and touch_attributes.value >= attribution_parts.value)
-        or (attribution_parts.relation = '<=' and touch_attributes.value <= attribution_parts.value)
-        or (attribution_parts.relation = '>' and touch_attributes.value > attribution_parts.value)
-        or (attribution_parts.relation = '<' and touch_attributes.value < attribution_parts.value)
-        or (attribution_parts.relation = '<>' and touch_attributes.value <> attribution_parts.value)
+        (attribution_parts.relation = '=' and touch_attributes.value = cast(attribution_parts.value as string))
+        or (attribution_parts.relation = '>=' and touch_attributes.value >= cast(attribution_parts.value as string))
+        or (attribution_parts.relation = '<=' and touch_attributes.value <= cast(attribution_parts.value as string))
+        or (attribution_parts.relation = '>' and touch_attributes.value > cast(attribution_parts.value as string))
+        or (attribution_parts.relation = '<' and touch_attributes.value < cast(attribution_parts.value as string))
+        or (attribution_parts.relation = '<>' and touch_attributes.value <> cast(attribution_parts.value as string))
 ),
 
 matched_rules as (

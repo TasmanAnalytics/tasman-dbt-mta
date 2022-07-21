@@ -30,11 +30,11 @@ conversions_after_touches as (
         touches.touch_category,
         conversions.conversion_event_id,
         conversions.conversion_timestamp,
-        conversions.conversion
+        conversions.conversion_category
 
     from
         touches
-        left join conversions
+        inner join conversions
             on
                 touches.touch_segmentation_id = conversions.conversion_segmentation_id
                 and touches.model_id = conversions.model_id
@@ -52,17 +52,17 @@ matched_touches as (
         model_id,
         touch_category,
         case
-            when conversion is not null
+            when conversion_category is not null
             then first_value(conversion_event_id) over (partition by segmentation_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
         end as conversion_event_id,
         case
-            when conversion is not null
+            when conversion_category is not null
             then first_value(conversion_timestamp) over (partition by segmentation_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
         end as conversion_timestamp,
         case
-            when conversion is not null
-            then first_value(conversion) over (partition by segmentation_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
-        end as conversion
+            when conversion_category is not null
+            then first_value(conversion_category) over (partition by segmentation_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
+        end as conversion_category
 
     from
         conversions_after_touches
@@ -75,11 +75,11 @@ conversion_intervals as (
         matched_touches.touch_timestamp,
         matched_touches.model_id,
         matched_touches.touch_category,
-        matched_touches.conversion,
+        matched_touches.conversion_category,
         matched_touches.conversion_event_id,
         matched_touches.conversion_timestamp,
         case
-            when matched_touches.conversion is not null
+            when matched_touches.conversion_category is not null
             then {{ dbt_utils.datediff("matched_touches.touch_timestamp", "matched_touches.conversion_timestamp", 'second') }}
         end as interval_convert,
         attribution_windows.att_window,
@@ -113,29 +113,29 @@ touch_events as (
         touch_timestamp,
         model_id,
         touch_category,
-        conversion,
+        conversion_category,
         conversion_event_id,
         conversion_timestamp,
         att_window,
         interval_convert,
         case
-            when conversion is not null
+            when conversion_category is not null
             then {{ dbt_utils.datediff("lag(touch_timestamp) over (partition by conversion_event_id, model_id order by touch_timestamp)", "touch_timestamp", 'second') }}
         end as interval_pre,
         case
-            when conversion is not null
+            when conversion_category is not null
             then {{ dbt_utils.datediff("touch_timestamp", "lead(touch_timestamp, 1, conversion_timestamp) over (partition by conversion_event_id, model_id order by touch_timestamp)", 'second') }}
         end as interval_post,
         case
-            when conversion is not null
+            when conversion_category is not null
             then count(distinct touch_event_id) over (partition by conversion_event_id, model_id)
         end as convert_touch_count,
         case
-            when conversion is not null
+            when conversion_category is not null
             then rank() over (partition by conversion_event_id, model_id order by touch_timestamp)
         end as convert_seq_up,
         case
-            when conversion is not null
+            when conversion_category is not null
             then rank() over (partition by conversion_event_id, model_id order by touch_timestamp desc)
         end as convert_seq_down
         
@@ -168,7 +168,7 @@ touch_attributes as (
 
         case
             when touch_taxonomy.attribute = 'touch_category' then cast(touch_events.touch_category as string)
-            when touch_taxonomy.attribute = 'conversion' then cast(touch_events.conversion as string)
+            when touch_taxonomy.attribute = 'conversion_category' then cast(touch_events.conversion_category as string)
             when touch_taxonomy.attribute = 'convert_seq_up' then cast(touch_events.convert_seq_up as string)
             when touch_taxonomy.attribute = 'convert_seq_down' then cast(touch_events.convert_seq_down as string)
             when touch_taxonomy.attribute = 'interval_pre' then cast(touch_events.interval_pre as string)

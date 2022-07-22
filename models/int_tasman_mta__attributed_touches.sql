@@ -1,3 +1,5 @@
+{{ config(materialized='table') }}
+
 with
 
 touches as (
@@ -101,7 +103,6 @@ windowed_touches as (
     where
         interval_convert < time_seconds
         or time_seconds = 0
-        or interval_convert is null
 
 ),
 
@@ -124,7 +125,7 @@ touch_events as (
         end as interval_pre,
         case
             when conversion_category is not null
-            then {{ dbt_utils.datediff("touch_timestamp", "lead(touch_timestamp, 1, conversion_timestamp) over (partition by conversion_event_id, model_id order by touch_timestamp)", 'second') }}
+            then {{ dbt_utils.datediff("touch_timestamp", "coalesce(lead(touch_timestamp, 1) over (partition by conversion_event_id, model_id order by touch_timestamp), conversion_timestamp)", 'second') }}
         end as interval_post,
         case
             when conversion_category is not null

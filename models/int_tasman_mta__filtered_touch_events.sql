@@ -1,7 +1,14 @@
+{{config(materialized='incremental')}}
+
 with
 
 touch_events as (
     select * from {{ var('touches_model') }}
+    {% if is_incremental() %}
+    -- this filter will only be applied on an incremental run
+    where 
+        {{var('touches_timestamp_field')}} > (select max({{var('touches_timestamp_field')}}) from {{ this }})
+    {% endif %}
 ),
 
 touch_rules as (
@@ -67,12 +74,10 @@ touch_rules_compiled as ( -- converts the value of the rule part predicate to th
             when type = 'boolean' and value = 'false' then false
             else null
         end as boolean_value,
-
         case
             when type = 'integer' then {{dbt_utils.safe_cast("value", "integer")}}
             else null
         end as integer_value,
-
         case
             when type = 'float' then {{dbt_utils.safe_cast("value", "numeric")}}
             else null

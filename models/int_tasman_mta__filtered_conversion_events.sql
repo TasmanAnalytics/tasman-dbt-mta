@@ -1,7 +1,14 @@
+{{config(materialized='incremental')}}
+
 with
 
 conversion_events as (
     select * from {{ var('conversions_model') }}
+    {% if is_incremental() %}
+    -- this filter will only be applied on an incremental run
+    where 
+        {{var('conversions_timetstamp_field')}} > (select max({{var('conversions_timetstamp_field')}}) from {{ this }})
+    {% endif %}
 ),
 
 conversion_rules as (
@@ -46,16 +53,17 @@ event_attributes as (
         raw_event_attributes
     where
         value is not null
+        
 ),
 
 conversion_rules_bit as ( -- maps rule parts to their attribute types and adds a bit used for validating that all parts of any rule are matched
-
     select
         *,
         power(2, part - 1) as bit
 
     from
         conversion_rules
+        
 ),
 
 conversion_rules_compiled as ( -- converts the value of the rule part predicate to the appropriate native type, for better performance
@@ -67,12 +75,10 @@ conversion_rules_compiled as ( -- converts the value of the rule part predicate 
             when type = 'boolean' and value = 'false' then false
             else null
         end as boolean_value,
-
         case
             when type = 'integer' then {{dbt_utils.safe_cast("value", "integer")}}
             else null
         end as integer_value,
-
         case
             when type = 'float' then {{dbt_utils.safe_cast("value", "numeric")}}
             else null

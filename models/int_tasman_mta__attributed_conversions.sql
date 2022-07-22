@@ -1,3 +1,6 @@
+
+{{ config(materialized='table') }}
+
 with
 
 conversion_events as (

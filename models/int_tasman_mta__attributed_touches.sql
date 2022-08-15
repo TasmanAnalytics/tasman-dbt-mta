@@ -25,7 +25,7 @@ attribution_windows as (
 conversions_after_touches as (
 
     select
-        touches.touch_segmentation_id as segmentation_id,
+        touches.touch_segmentation_id,
         touches.touch_event_id,
         touches.touch_timestamp,
         touches.model_id,
@@ -48,22 +48,22 @@ conversions_after_touches as (
 matched_touches as (
 
     select distinct
-        segmentation_id,
+        touch_segmentation_id,
         touch_event_id,
         touch_timestamp,
         model_id,
         touch_category,
         case
             when conversion_category is not null
-            then first_value(conversion_event_id) over (partition by segmentation_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
+            then first_value(conversion_event_id) over (partition by touch_segmentation_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
         end as conversion_event_id,
         case
             when conversion_category is not null
-            then first_value(conversion_timestamp) over (partition by segmentation_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
+            then first_value(conversion_timestamp) over (partition by touch_segmentation_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
         end as conversion_timestamp,
         case
             when conversion_category is not null
-            then first_value(conversion_category) over (partition by segmentation_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
+            then first_value(conversion_category) over (partition by touch_segmentation_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
         end as conversion_category
 
     from
@@ -72,7 +72,7 @@ matched_touches as (
 
 conversion_intervals as (
     select
-        matched_touches.segmentation_id,
+        matched_touches.touch_segmentation_id,
         matched_touches.touch_event_id,
         matched_touches.touch_timestamp,
         matched_touches.model_id,
@@ -109,7 +109,7 @@ windowed_touches as (
 touch_events as (
 
     select
-        segmentation_id,
+        touch_segmentation_id,
         touch_event_id,
         touch_timestamp,
         model_id,
@@ -161,7 +161,7 @@ touch_taxonomy as (
 touch_attributes as (
 
     select
-        touch_events.segmentation_id,
+        touch_events.touch_segmentation_id,
         touch_events.touch_event_id,
         touch_events.conversion_event_id,
         touch_events.model_id,
@@ -215,7 +215,7 @@ rules_bitsums as (
 matched_parts as (
 
     select
-        touch_attributes.segmentation_id,
+        touch_attributes.touch_segmentation_id,
         touch_attributes.touch_event_id,
         touch_attributes.conversion_event_id,
         touch_attributes.attribute,
@@ -244,7 +244,7 @@ matched_parts as (
 matched_rules as (
 
     select
-        matched_parts.segmentation_id,
+        matched_parts.touch_segmentation_id,
         matched_parts.touch_event_id,
         matched_parts.conversion_event_id,
         matched_parts.model_id,
@@ -261,7 +261,7 @@ matched_rules as (
             and matched_parts.rule = rules_bitsums.rule
 
     group by
-        matched_parts.segmentation_id,
+        matched_parts.touch_segmentation_id,
         matched_parts.touch_event_id,
         matched_parts.conversion_event_id,
         matched_parts.model_id,
@@ -276,7 +276,7 @@ matched_rules as (
 matched_groups as (
 
     select distinct
-        segmentation_id,
+        touch_segmentation_id,
         touch_event_id,
         conversion_event_id,
         model_id,
@@ -289,11 +289,11 @@ matched_groups as (
 share_attribution as (
 
     select
-        matched_groups.segmentation_id,
+        matched_groups.touch_segmentation_id,
         matched_groups.touch_event_id,
         matched_groups.model_id,
         matched_groups.spec,
-        conversion_shares.share / count(1) over (partition by matched_groups.segmentation_id, matched_groups.conversion_event_id, matched_groups.model_id, matched_groups.spec) as conversion_share
+        conversion_shares.share / count(1) over (partition by matched_groups.touch_segmentation_id, matched_groups.conversion_event_id, matched_groups.model_id, matched_groups.spec) as conversion_share
 
     from
         matched_groups

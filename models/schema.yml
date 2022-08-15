@@ -37,6 +37,9 @@ models:
         description: "The timestamp when the touch event happened."
         tests:
           - in_past
+      
+      - name: touch_segmentation_id
+        description: "The segmentation ID of the touch."
 
       - name: touch_category
         description: "The category of the touch, as defined in the touch rules seed."
@@ -83,8 +86,8 @@ models:
   - name: int_tasman_mta__attributed_touches
     description: "This model contains all touches that have been successfully attributed to a conversion. There is at least 1 row per conversion per model"
     columns:
-      - name: segmentation_id
-        description: "The segmentation ID of the touch and conversion."
+      - name: touch_segmentation_id
+        description: "The segmentation ID of the touch."
         tests:
           - not_null
 

@@ -21,6 +21,7 @@ joined_conversion_events as (
         conversion_events.conversion_category,
         attributed_touches.touch_event_id,
         attributed_touches.touch_timestamp,
+        attributed_touches.touch_segmentation_id,
         attributed_touches.touch_category,
         attributed_touches.convert_touch_count,
         attributed_touches.convert_seq_up,

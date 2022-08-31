@@ -2,6 +2,6 @@
 
     select *
     from {{ model }}
-    where (cast({{ column_name }} as timestamp) >= convert_timezone('UTC', current_timestamp())::timestamp_ntz and  {{ column_name }} is not null)
+    where (cast({{ column_name }} as timestamp) >= {{ current_utc_time() }} and  {{ column_name }} is not null)
 
 {% endtest %}

@@ -1,5 +1,10 @@
 
-{{ config(materialized='table') }}
+{{
+    config(
+        materialized='table',
+        schema='attribution'
+    )
+}}
 
 with
 

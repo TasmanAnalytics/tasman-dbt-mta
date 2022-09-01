@@ -1,4 +1,9 @@
-{{config(materialized='incremental')}}
+{{
+    config(
+        materialized='incremental',
+        schema='attribution'
+    )
+}}
 
 with
 

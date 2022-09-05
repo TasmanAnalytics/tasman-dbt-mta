@@ -12,7 +12,7 @@ touch_events as (
     {% if is_incremental() %}
     -- this filter will only be applied on an incremental run
     where 
-        {{var('touches_timestamp_field')}} > (select max({{var('touches_timestamp_field')}}) from {{ this }})
+        {{var('touches_timestamp_field')}} > (select max(touch_timestamp) from {{ this }})
     {% endif %}
 ),
 

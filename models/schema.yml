@@ -1,0 +1,225 @@
+version: 2
+
+models:
+  - name: int_tasman_mta__attributed_conversions
+    description: "This model contains both attributed and unattributed conversion events, along with the metadata describing the attribution. There is at least 1 row per conversion per model."
+    columns:
+      - name: conversion_segmentation_id
+        description: "Identifier that specifies how conversion events are segmented. Segementation ID across touches and conversions must match for successful attribution. Typically this might be a user ID."
+        tests:
+          - not_null
+
+      - name: conversion_event_id
+        description: "Identifer that defines a unique conversion event."
+        tests:
+          - not_null
+
+      - name: conversion_timestamp
+        description: "The timestamp when the conversion event happened."
+        tests:
+          - not_null
+          - in_past
+
+      - name: model_id
+        description: "Identifer that specifies the attribution model that the attribution relates to."
+        tests:
+          - not_null
+
+      - name: conversion_category
+        description: "The category of conversion event, as defined in the conversion rules seed."
+        tests:
+          - not_null
+
+      - name: touch_event_id
+        description: "Identifier that defines a unique touch event."
+
+      - name: touch_timestamp
+        description: "The timestamp when the touch event happened."
+        tests:
+          - in_past
+      
+      - name: touch_segmentation_id
+        description: "The segmentation ID of the touch."
+
+      - name: touch_category
+        description: "The category of the touch, as defined in the touch rules seed."
+        tests:
+          - not_null
+
+      - name: convert_touch_count
+        description: "The number of touches that have been attributed to the the conversion event."
+        tests:
+          - greater_than_zero
+
+      - name: convert_seq_up
+        description: "The consecutive touch number based on the timestamp ascending."
+        tests:
+          - greater_than_zero
+
+      - name: convert_seq_down
+        description: "The consecutive touch number based on the timestamp descending."
+        tests:
+          - greater_than_zero
+
+      - name: interval_pre
+        description: "Time in seconds between the touch and the touch preceding."
+        tests:
+          - greater_than_zero
+
+      - name: interval_post
+        description: "Time in seconds between the touch and the touch following."
+        tests:
+          - greater_than_zero
+
+      - name: interval_convert
+        description: "Time in seconds between the touch and the attributed conversion."
+        tests:
+          - greater_than_zero
+
+      - name: spec
+        description: "The attribution spec that matched this conversion, as defined in the attribution rules seed."
+
+      - name: conversion_share
+        description: "The share of the conversion attributed to this touch, expressed as a decimal percentage."
+
+
+  - name: int_tasman_mta__attributed_touches
+    description: "This model contains all touches that have been successfully attributed to a conversion. There is at least 1 row per conversion per model"
+    columns:
+      - name: touch_segmentation_id
+        description: "The segmentation ID of the touch."
+        tests:
+          - not_null
+
+      - name: touch_event_id
+        description: "Identifier that defines a unique touch event."
+        tests:
+          - not_null
+
+      - name: touch_timestamp
+        description: "The timestamp when the touch event happened."
+        tests:
+          - not_null
+          - in_past
+
+      - name: model_id
+        description: "Identifer that specifies the attribution model that the attribution relates to."
+        tests:
+          - not_null
+
+      - name: touch_category
+        description: "The category of the touch, as defined in the touch rules seed."
+        tests:
+          - not_null
+
+      - name: conversion_category
+        description: "The category of conversion event, as defined in the conversion rules seed."
+        tests:
+          - not_null
+
+      - name: conversion_event_id
+        description: "Identifer that defines a unique conversion event."
+        tests:
+          - not_null
+
+      - name: conversion_timestamp
+        description: "The timestamp when the conversion event happened."
+        tests:
+          - not_null
+          - in_past
+
+      - name: att_window
+        description: "Indentifier for the attribution window, as specific in the attribution windows seed."
+
+      - name: interval_pre
+        description: "Time in seconds between the touch and the touch preceding."
+
+      - name: interval_post
+        description: "Time in seconds between the touch and the touch following."
+
+      - name: interval_convert
+        description: "Time in seconds between the touch and the attributed conversion."
+        tests:
+          - not_null
+          - greater_than_zero
+
+      - name: convert_touch_count
+        description: "The number of touches that have been attributed to the the conversion event."
+        tests:
+          - greater_than_zero
+
+      - name: convert_seq_up
+        description: "The consecutive touch number based on the timestamp ascending."
+        tests:
+          - greater_than_zero
+
+      - name: convert_seq_down
+        description: "The consecutive touch number based on the timestamp descending."
+        tests:
+          - greater_than_zero
+
+      - name: spec
+        description: "The attribution spec that matched this conversion, as defined in the attribution rules seed."
+
+      - name: conversion_share
+        description: "The share of the conversion attributed to this touch, expressed as a decimal percentage."
+        tests:
+          - greater_than_zero
+
+  - name: int_tasman_mta__filtered_conversion_events
+    description: "This model applies the conversion rules seed to the model defined in the 'conversions_model' variable with the project file."
+    columns:
+      - name: conversion_segmentation_id
+        description: "Identifier that specifies how conversion events are segmented. Segementation ID across touches and conversions must match for successful attribution. Typically this might be a user ID."
+        tests:
+          - not_null
+
+      - name: conversion_event_id
+        description: "Identifer that defines a unique conversion event."
+        tests:
+          - not_null
+
+      - name: conversion_timestamp
+        description: "The timestamp when the conversion event happened."
+        tests:
+          - not_null
+          - in_past
+
+      - name: model_id
+        description: "Identifer that specifies the attribution model that the attribution relates to."
+        tests:
+          - not_null
+
+      - name: conversion_category
+        description: "The category of conversion event, as defined in the conversion rules seed."
+        tests:
+          - not_null
+
+  - name: int_tasman_mta__filtered_touch_events
+    description: ""
+    columns:
+      - name: touch_segmentation_id
+        description: "Identifier that specifies how touch events are segmented. Segementation ID across touches and conversions must match for successful attribution. Typically this might be a user ID."
+        tests:
+          - not_null
+
+      - name: touch_event_id
+        description: "Identifer that defines a unique touch event."
+        tests:
+          - not_null
+
+      - name: touch_timestamp
+        description: "The timestamp when the touch event happened."
+        tests:
+          - not_null
+          - in_past
+
+      - name: model_id
+        description: "Identifer that specifies the attribution model that the attribution relates to."
+        tests:
+          - not_null
+
+      - name: touch_category
+        description: "The category of the touch, as defined in the touch rules seed."
+        tests:
+          - not_null

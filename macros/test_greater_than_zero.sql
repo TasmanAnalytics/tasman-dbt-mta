@@ -2,6 +2,6 @@
 
     select *
     from {{ model }}
-    where ({{ column_name }} <= 0 and {{ column_name }} is not null)
+    where ({{ column_name }} < 0 and {{ column_name }} is not null)
 
 {% endtest %}

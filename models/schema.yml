@@ -43,8 +43,6 @@ models:
 
       - name: touch_category
         description: "The category of the touch, as defined in the touch rules seed."
-        tests:
-          - not_null
 
       - name: convert_touch_count
         description: "The number of touches that have been attributed to the the conversion event."

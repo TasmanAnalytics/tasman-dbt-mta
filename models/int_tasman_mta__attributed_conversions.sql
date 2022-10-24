@@ -28,6 +28,7 @@ joined_conversion_events as (
         attributed_touches.touch_timestamp,
         attributed_touches.touch_segmentation_id,
         attributed_touches.touch_category,
+        attributed_touches.att_window,
         attributed_touches.convert_touch_count,
         attributed_touches.convert_seq_up,
         attributed_touches.convert_seq_down,

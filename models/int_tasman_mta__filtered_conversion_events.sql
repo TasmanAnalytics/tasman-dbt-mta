@@ -12,7 +12,7 @@ conversion_events as (
     {% if is_incremental() %}
     -- this filter will only be applied on an incremental run
     where 
-        {{var('conversions_timetstamp_field')}} > (select max({{var('conversions_timetstamp_field')}}) from {{ this }})
+        {{var('conversions_timetstamp_field')}} > (select max(conversion_timestamp) from {{ this }})
     {% endif %}
 ),
 

@@ -155,7 +155,7 @@ first_touch_30_day,30 day,2629746
 ## Engine Outputs
 
 The engine has two primary output models, attributed touches and attributed conversions.   
-- **Attributed Touches** contains all filtered touches (based on the touch rules) across all attribution models whether or not they have attributed to a conversion. Where touches have been attributed, there will be a `conversion_event_id` for that `touch_event_id`, as well as a conversion share value if appropriate.
+- **Attributed Touches** contains all filtered touches (based on the touch rules) across all attribution models that have been attributed to a conversion. Where touches have been attributed, there will be a `conversion_event_id` for that `touch_event_id`, as well as a conversion share value if appropriate.
 - **Attributed Conversions** is this inverse of the attributed touches and contains all filtered conversions (based on the conversion rules) across all attribution models, whether or not they have attributed to a touch. Each `conversion_event_id` may appear once all multiple times depending on the number of attributed touches. Where `touch_event_id` is null, this indicates that the conversion is unattributed.
 
 

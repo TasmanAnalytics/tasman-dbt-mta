@@ -12,6 +12,23 @@ Examples of attribution models include:
 - First touch - 100% conversion credit is applied to the earliest occuring touch point
 - U-shaped - 40% conversion credit is given to both first and last touches, with the remaining 20% split across all others
 
+## Adding the dbt package
+
+This package isn't currently publicly available and requires a token supplied by Tasman Analytics. It's best practice to use environment variables to store the token. You can do this locally by adding the following to your terminal configuration file (`.zprofile` or `.zsh` depending on your terminal)
+
+```
+export DBT_TASMAN_MTA_TOKEN="<token>"
+```
+For production runs, this will also need to be added to your production configuration. For dbt Cloud users, please follow [this guide](https://docs.getdbt.com/docs/build/environment-variables).
+
+With the environment variable, you can use a git reference in the `packages.yml` file.
+
+```
+packages:
+    - git: https://{{env_var('DBT_TASMAN_MTA_TOKEN')}}@github.com/TasmanAnalytics/tasman-dbt-mta.git
+    revision: 0.1.1
+```
+
 ## Configuring the Engine
 
 The engine can be connected to your existing touch and conversion data sources using variables within the main project `dbt_project.yml` file

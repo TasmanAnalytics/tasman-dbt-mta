@@ -87,7 +87,7 @@ conversion_intervals as (
         matched_touches.conversion_timestamp,
         case
             when matched_touches.conversion_category is not null
-            then {{ dbt_utils.datediff("matched_touches.touch_timestamp", "matched_touches.conversion_timestamp", 'second') }}
+            then {{ dbt.datediff("matched_touches.touch_timestamp", "matched_touches.conversion_timestamp", 'second') }}
         end as interval_convert,
         attribution_windows.att_window,
         attribution_windows.time_seconds
@@ -126,11 +126,11 @@ touch_events as (
         interval_convert,
         case
             when conversion_category is not null
-            then {{ dbt_utils.datediff("lag(touch_timestamp) over (partition by conversion_event_id, model_id order by touch_timestamp)", "touch_timestamp", 'second') }}
+            then {{ dbt.datediff("lag(touch_timestamp) over (partition by conversion_event_id, model_id order by touch_timestamp)", "touch_timestamp", 'second') }}
         end as interval_pre,
         case
             when conversion_category is not null
-            then {{ dbt_utils.datediff("touch_timestamp", "coalesce(lead(touch_timestamp, 1) over (partition by conversion_event_id, model_id order by touch_timestamp), conversion_timestamp)", 'second') }}
+            then {{ dbt.datediff("touch_timestamp", "coalesce(lead(touch_timestamp, 1) over (partition by conversion_event_id, model_id order by touch_timestamp), conversion_timestamp)", 'second') }}
         end as interval_post,
         case
             when conversion_category is not null

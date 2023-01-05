@@ -36,6 +36,7 @@ The engine can be connected to your existing touch and conversion data sources u
 ```
 vars:
   tasman_dbt_mta:
+    incremental: ""
     touches_model: "{{ ref() }}"
     touches_timestamp_field: ""
     touches_event_id_field: ""
@@ -51,6 +52,7 @@ vars:
     attribution_windows: "{{ ref() }}"
 ```
 
+`incremental`: "true" or "false" depending on whether the model should run using incremental models or not  
 `touches_model`: Reference to the model containing touch data points  
 `touches_timestamp_field`: Field within the `touches_model` that contains timestamps for each touch point  
 `touches_event_id_field`: Field within the `touches_model` that contains a unique indentifier for each touch point  

@@ -80,11 +80,11 @@ conversion_rules_compiled as ( -- converts the value of the rule part predicate 
             else null
         end as boolean_value,
         case
-            when type = 'integer' then {{dbt_utils.safe_cast("value", "integer")}}
+            when type = 'integer' then {{dbt.safe_cast("value", "integer")}}
             else null
         end as integer_value,
         case
-            when type = 'float' then {{dbt_utils.safe_cast("value", "numeric")}}
+            when type = 'float' then {{dbt.safe_cast("value", "numeric")}}
             else null
         end as float_value
 
@@ -143,22 +143,22 @@ matched_parts as ( --returns all matched parts of the rules from the event strea
 
         or (rules.type = 'integer'
             and (
-                 (rules.relation = '=' and {{dbt_utils.safe_cast("event_attributes.value", "integer")}} = rules.integer_value)
-                 or (rules.relation = '>=' and {{dbt_utils.safe_cast("event_attributes.value", "integer")}} >= rules.integer_value)
-                 or (rules.relation = '<=' and {{dbt_utils.safe_cast("event_attributes.value", "integer")}} <= rules.integer_value)
-                 or (rules.relation = '>' and {{dbt_utils.safe_cast("event_attributes.value", "integer")}} > rules.integer_value)
-                 or (rules.relation = '<' and {{dbt_utils.safe_cast("event_attributes.value", "integer")}} < rules.integer_value)
-                 or (rules.relation = '<>' and {{dbt_utils.safe_cast("event_attributes.value", "integer")}} <> rules.integer_value)
+                 (rules.relation = '=' and {{dbt.safe_cast("event_attributes.value", "integer")}} = rules.integer_value)
+                 or (rules.relation = '>=' and {{dbt.safe_cast("event_attributes.value", "integer")}} >= rules.integer_value)
+                 or (rules.relation = '<=' and {{dbt.safe_cast("event_attributes.value", "integer")}} <= rules.integer_value)
+                 or (rules.relation = '>' and {{dbt.safe_cast("event_attributes.value", "integer")}} > rules.integer_value)
+                 or (rules.relation = '<' and {{dbt.safe_cast("event_attributes.value", "integer")}} < rules.integer_value)
+                 or (rules.relation = '<>' and {{dbt.safe_cast("event_attributes.value", "integer")}} <> rules.integer_value)
                  )
         )
 
         or (rules.type = 'float'
             and (
-                 (rules.relation = '=' and {{dbt_utils.safe_cast("event_attributes.value", "numeric")}} = rules.float_value)
-                 or (rules.relation = '>=' and {{dbt_utils.safe_cast("event_attributes.value", "numeric")}} >= rules.float_value)
-                 or (rules.relation = '<=' and {{dbt_utils.safe_cast("event_attributes.value", "numeric")}} <= rules.float_value)
-                 or (rules.relation = '>' and {{dbt_utils.safe_cast("event_attributes.value", "numeric")}} > rules.float_value)
-                 or (rules.relation = '<' and {{dbt_utils.safe_cast("event_attributes.value", "numeric")}} < rules.float_value)
+                 (rules.relation = '=' and {{dbt.safe_cast("event_attributes.value", "numeric")}} = rules.float_value)
+                 or (rules.relation = '>=' and {{dbt.safe_cast("event_attributes.value", "numeric")}} >= rules.float_value)
+                 or (rules.relation = '<=' and {{dbt.safe_cast("event_attributes.value", "numeric")}} <= rules.float_value)
+                 or (rules.relation = '>' and {{dbt.safe_cast("event_attributes.value", "numeric")}} > rules.float_value)
+                 or (rules.relation = '<' and {{dbt.safe_cast("event_attributes.value", "numeric")}} < rules.float_value)
                  )
         )
 

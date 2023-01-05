@@ -1,9 +1,8 @@
-{{
-    config(
-        materialized='incremental',
-        schema='attribution'
-    )
-}}
+{% if var('incremental') == 'true' %}
+    {{config(materialized='incremental', schema='attribution')}}
+{% else %}
+    {{config(materialized='table', schema='attribution')}}
+{% endif %}
 
 with
 

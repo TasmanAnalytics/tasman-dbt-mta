@@ -153,7 +153,7 @@ touch_events as (
 touch_taxonomy as (
 
     select 'touch_category' as attribute union all
-    select 'conversion' as attribute union all
+    select 'conversion_category' as attribute union all
     select 'convert_touch_count' as attribution union all
     select 'convert_seq_up' as attribute union all
     select 'convert_seq_down' as attribute union all

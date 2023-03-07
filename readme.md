@@ -77,17 +77,32 @@ Consistent across all files is the `model_id` field, which described which attri
 These files contains rules that are used to filter touches and conversions for specific attribution models. 
 > N.B. There needs to be at least 1 rule per model for that model to receive any touches or conversions (otherwise they are all filtered out).
 
-Touch Rules Example:
+Touch Rules Example (line spaces are for readability - should not be included in the actual seed file):
 
 ```
 model_id,touch_category,rule,part,attribute,type,relation,value
-first_touch,all_channels,1,1,touch_channel,string,<>,''
+
+first_touch_lead_7_days,all_channels,1,1,touch_channel,string,<>,''
+
+last_touch_purchase_30_days,all_channels,1,1,touch_channel,string,<>,''
+
+u_shaped_purchase_all_time,all_channels,1,1,touch_channel,string,<>,''
+
+w_shaped_30_days,all_channels,1,1,touch_channel,string,<>,''
 ```
 
-Conversion Rules Example:
+Conversion Rules Example (line spaces are for readability - should not be included in the actual seed file):
 ```
 model_id,conversion_category,rule,part,attribute,type,relation,value
-first_touch,purchase,1,1,conversion_type,string,=,purchase
+
+first_touch_lead_7_days,purchase,1,1,conversion_type,string,=,purchase
+
+last_touch_purchase_30_days,purchase,1,1,conversion_type,string,=,lead
+
+u_shaped_purchase_all_time,purchase,1,1,conversion_type,string,=,purchase
+
+w_shaped_30_days,lead,1,1,conversion_type,string,=,lead
+w_shaped_30_days,purchase,1,1,conversion_type,string,=,purchase
 ```
 
 `touch_category` / `conversion_category`: A text field that can be used to describe the category of touches or conversions for the model. This provides a mechanism to add additional attribution specific categorisations to the touches and conversions.  
@@ -102,16 +117,32 @@ first_touch,purchase,1,1,conversion_type,string,=,purchase
 
 The attribution rules seed defines how touches are attributed to conversions for each attribution model. Each set of rules is grouped into a **spec**, and each spec can be assigned a different conversion share value in the conversion shares seed.
 
-Attribution Rules Examples:
+Attribution Rules Examples (line spaces are for readability - should not be included in the actual seed file):
 
 ```
 model_id,spec,rule,part,attribute,relation,value
-first_touch,1,1,1,convert_seq_up,=,1
-last_touch,1,1,1,convert_seq_down,=,1
-u_shaped,1,1,1,convert_seq_up,=,1
-u_shaped,2,1,1,convert_seq_down,=,1
-u_shaped,3,1,1,convert_seq_up,>,1
-u_shaped,3,1,2,convert_seq_down,<,1
+
+first_touch_lead_7_days,1,1,1,convert_seq_up,=,1
+
+last_touch_purchase_30_days,1,1,1,convert_seq_down,=,1
+
+u_shaped_purchase_all_time,1,1,1,convert_seq_up,=,1
+u_shaped_purchase_all_time,2,1,1,convert_seq_down,=,1
+u_shaped_purchase_all_time,3,1,1,convert_seq_up,>,1
+u_shaped_purchase_all_time,3,1,2,convert_seq_down,<,1
+
+w_shaped_30_days,1,1,1,convert_seq_up,=,1
+w_shaped_30_days,1,1,2,conversion_category,=,lead
+w_shaped_30_days,2,1,1,convert_seq_down,=,1
+w_shaped_30_days,2,1,2,conversion_category,=,lead
+w_shaped_30_days,3,1,1,convert_seq_down,=,1
+w_shaped_30_days,3,1,2,conversion_category,=,purchase
+w_shaped_30_days,4,1,2,convert_seq_up,>,1
+w_shaped_30_days,4,1,1,convert_seq_down,>,1
+w_shaped_30_days,4,1,3,conversion_category,=,purchase
+w_shaped_30_days,4,2,1,convert_seq_down,>,1
+w_shaped_30_days,4,2,2,conversion_category,=,purchase
+
 ```
 
 `spec`: Short for specification, each spec defines each rule set of a particular attribution model, and be assigned a conversion share value. In the example above, it can be seen that 'single touch' models such as first touch and last touch only have 1 spec, whereas more complex multi-touch models will have more than one spec.
@@ -120,6 +151,9 @@ u_shaped,3,1,2,convert_seq_down,<,1
 `rule`: A 1-indexed integer defining the rule number for that spec. Each rule is evaluated with OR logic, so if a category has 2 rules, the logic is rule 1 OR rule 2 has to be met for the touch to be assigned that category.  
 `part`: A 1-indexed integer defining parts of a rule. Each rule part is considered with AND logic, so if a rule has 2 parts, the logic is part 1 AND part 2 has to be met for the touch to be evaluated **true** against that rule.  
 `attribute`: The derived property that is being evaluated for the rule part. If the attribute doesn't match any fields in the model then logically is will always output **false**.  Properties available are: 
+- `touch_category`: The category of the touch as per the touch rules
+- `conversion_category`: The category of the conversion as per the conversion rules
+- `convert_touch_count`: The total number of attributed touches.
 - `convert_seq_up`: The consecutive touch number based on the timestamp ascending.
 - `convert_seq_down`: The consecutive touch number based on the timestamp descending.
 - `interval_pre`: Time in seconds between the touch and the touch preceding.
@@ -139,11 +173,19 @@ The conversion shares seed is used to map attribution rules specs to decimal per
 Conversion Share Example (mapping to the attribution rule example above, using generally accepted conversion share values):
 ```
 model_id,spec,share
-first_touch,1,1
-last_touch,1,1
-u_shaped,1,0.4
-u_shaped,2,0.4
-u_shaped,3,0.2
+
+first_touch_lead_7_days,1,1
+
+last_touch_purchase_30_days,1,1
+
+u_shaped_purchase_all_time,1,0.4
+u_shaped_purchase_all_time,2,0.4
+u_shaped_purchase_all_time,3,0.2
+
+w_shaped_30_days,1,0.3
+w_shaped_30_days,2,0.3
+w_shaped_30_days,3,0.3
+w_shaped_30_days,4,0.1
 ```
 
 `spec`: The spec within the attribution rules seed that the share is to be applied to.  
@@ -151,9 +193,16 @@ u_shaped,3,0.2
 
 > Example U-Shaped model  
 > 6 touches happen before conversion, the shares are split as follows:
-> - Touch 1 = 40% share
-> - Touch 2,3,4,5 = split 20% share, so 5% each
-> - Touch 6 = a 40% share
+> - Spec 1: First touch (Touch 1) = 40% share
+> - Spec 2: Last Touch (Touch 6) = a 40% share 
+> - Spec 3: All  other touches (Touches 2,3,4,5) split a 20% share = 5% each
+
+> Example W-Shaped model  
+> 3 touches happen before lead conversion, 4 touches happen inbetween lead conversion and purchase conversion. The shares are split as follows:
+> - Spec 1: First touch (Touch 1) = 30% share
+> - Spec 2: Last touch before lead (Touch 3) = 30%
+> - Spec 3: Last touch before purchase (Touch 7) = 30%
+> - Spec 4: All other touches (Touches 2,4,5,6) split a 10% share = 2.5% each
 
 ### Attribution Windows
 
@@ -162,9 +211,14 @@ The attribution window seed is used to define the maximum time between a touch a
 Attribution window example:
 ```
 model_id,att_window,time_seconds
-first_touch,all_time,0
-first_touch_7_day,7 day,604800
-first_touch_30_day,30 day,2629746
+
+first_touch_lead_7_days,7 day,604800
+
+last_touch_purchase_30_days,30 day,2629746
+
+u_shaped_purchase_all_time,all time,0
+
+w_shaped_30_days,30 day,2629746
 ```
 
 `att_window`: A string field used to describe the attribution window as plain text. This is passed as metadata in the output table as additional context.  

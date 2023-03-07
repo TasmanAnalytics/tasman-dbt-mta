@@ -298,7 +298,7 @@ share_attribution as (
         matched_groups.touch_event_id,
         matched_groups.model_id,
         matched_groups.spec,
-        conversion_shares.share / count(1) over (partition by matched_groups.touch_segmentation_id, matched_groups.conversion_event_id, matched_groups.model_id, matched_groups.spec) as conversion_share
+        conversion_shares.share / count(matched_groups.touch_event_id) over (partition by matched_groups.touch_segmentation_id, matched_groups.model_id, matched_groups.spec) as conversion_share
 
     from
         matched_groups

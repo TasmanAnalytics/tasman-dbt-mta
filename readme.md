@@ -137,9 +137,9 @@ w_shaped_30_days,2,1,1,convert_seq_down,=,1
 w_shaped_30_days,2,1,2,conversion_category,=,lead
 w_shaped_30_days,3,1,1,convert_seq_down,=,1
 w_shaped_30_days,3,1,2,conversion_category,=,purchase
-w_shaped_30_days,4,1,2,convert_seq_up,>,1
-w_shaped_30_days,4,1,1,convert_seq_down,>,1
-w_shaped_30_days,4,1,3,conversion_category,=,purchase
+w_shaped_30_days,4,1,1,convert_seq_up,>,1
+w_shaped_30_days,4,1,2,convert_seq_down,>,1
+w_shaped_30_days,4,1,3,conversion_category,=,lead
 w_shaped_30_days,4,2,1,convert_seq_down,>,1
 w_shaped_30_days,4,2,2,conversion_category,=,purchase
 

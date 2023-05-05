@@ -38,8 +38,8 @@ vars:
   tasman_dbt_mta:
     incremental: ""
     touches_model: "{{ ref() }}"
-    touches_timestamp_field: ""
     touches_event_id_field: ""
+    touches_timestamp_field: ""
     touches_segmentation_id_field: ""
     conversions_model: "{{ ref()}}"
     conversions_event_id_field: ""

@@ -235,3 +235,7 @@ The engine has two primary output models, attributed touches and attributed conv
 ## Performance Tracking
 
 Its unlikely that optimal attribution results will be achieved during the initial implementation of this engine - this is because the quality of the outputs are entirely dependent on the quality of the inputs along with tuning of the configurations. As such, an `attribution_performance_history` model has been added that will keep track of each time the attribution engine is run, and collect useful statistics that can help accelerate the implementation as well as monitor key metrics such as attribution rate.
+
+## Current Limitations of the Engine
+1. Handling conversion shares where the total number of touches is lower than the number of specs. For example, if there are only 2 touches but 3 attribution rule specs, then the total conversion shares will not sum to 100%. This needs to be accounted for when analysing the outputs.
+2. Conversion shares are assigned at the touch level, not the session level. This means that the inputs into the engine need to account for this. It is therefore most often the case that internal touches should be filtered.

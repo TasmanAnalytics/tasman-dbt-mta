@@ -43,7 +43,7 @@ vars:
     touches_segmentation_id_field: ""
     conversions_model: "{{ ref()}}"
     conversions_event_id_field: ""
-    conversions_timetstamp_field: ""
+    conversions_timestamp_field: ""
     conversions_segmentation_id_field: ""
     conversion_rules: "{{ ref() }}"
     touch_rules: "{{ ref() }}"

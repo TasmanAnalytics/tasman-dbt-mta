@@ -11,7 +11,7 @@ conversion_events as (
     {% if is_incremental() %}
     -- this filter will only be applied on an incremental run
     where 
-        {{var('conversions_timetstamp_field')}} > (select max(conversion_timestamp) from {{ this }})
+        {{var('conversions_timestamp_field')}} > (select max(conversion_timestamp) from {{ this }})
     {% endif %}
 ),
 
@@ -36,7 +36,7 @@ conversion_attributes as (
 raw_event_attributes as (
     select
         conversion_events.{{var('conversions_event_id_field')}} as conversion_event_id,
-        conversion_events.{{var('conversions_timetstamp_field')}} as conversion_timestamp,
+        conversion_events.{{var('conversions_timestamp_field')}} as conversion_timestamp,
         conversion_events.{{var('conversions_segmentation_id_field')}} as conversion_segmentation_id,
         conversion_attributes.attribute as attribute,
         case

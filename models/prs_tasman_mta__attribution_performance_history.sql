@@ -13,7 +13,7 @@ attribution_stats as (
     select
         {{ generate_uuid() }} as run_id,
         {{ current_utc_time() }} as run_date,
-        (select count(distinct model_id)) as model_count,
+        (select count(distinct model_id) from {{ ref('int_tasman_mta__attributed_conversions') }}) as model_count,
         (select count(distinct {{var('touches_event_id_field')}}) from {{ var('touches_model') }}) as input_touches,
         (select count(distinct touch_event_id) from {{ ref('int_tasman_mta__filtered_touch_events') }}) as filtered_touches,
         (select count(distinct touch_event_id) from {{ ref('int_tasman_mta__attributed_touches') }} where conversion_event_id is not null) as attributed_touches,

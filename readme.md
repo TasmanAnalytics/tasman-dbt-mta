@@ -50,6 +50,8 @@ vars:
     attribution_rules: "{{ ref() }}"
     conversion_shares: "{{ ref() }}"
     attribution_windows: "{{ ref() }}"
+    snowflake_prod_warehouse: ""
+    snowflake_dev_warehouse: ""
 ```
 
 `incremental`: "true" or "false" depending on whether the model should run using incremental models or not  
@@ -66,6 +68,8 @@ vars:
 `attribution_rules`: A seed file containing rules that are used to determine how touches are attributed to conversions (specs) for each attribution model  
 `conversion_shares`: A seed file that maps to each attribution spec to determine the credit awarded to touches meeting each rule for each attribution model  
 `attribution_windows`: A seed file that determines the maximum time between a touch and its conversion for each attribution model  
+`snowflake_prod_warehouse`: This is the snowflake warehouse that should be used for when the target = 'prod'. An empty string will use the profile default warehouse. Not required for bigquery connections.  
+`snowflake_dev_warehouse`: This is the snowflake warehouse that should be used for when the target = 'dev'. An empty string will use the profile default warehouse. Not required for bigquery connections.  
 
 
 ## Understanding the Configuration Seed Files

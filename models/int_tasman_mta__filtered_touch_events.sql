@@ -208,6 +208,10 @@ matched_rules as ( -- returns fulfilled rules which indicates that an event matc
 matched_categories as (-- Return one event record per touch_category (for the case where an event matches multiple rules within a touch_category)
 
     select distinct
+        {{ generate_surrogate_key([
+            'model_id',
+            'touch_event_id'
+            ]) }} as surrogate_key,
         touch_segmentation_id,
         touch_event_id,
         touch_timestamp,

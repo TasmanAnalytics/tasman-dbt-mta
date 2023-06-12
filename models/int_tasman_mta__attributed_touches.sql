@@ -310,6 +310,10 @@ share_attribution as (
 
 attributed_events as (
     select
+        {{ generate_surrogate_key([
+            'touch_events.model_id',
+            'touch_events.touch_event_id'
+            ]) }} as surrogate_key,
         touch_events.*,
         share_attribution.spec,
         share_attribution.conversion_share

@@ -20,6 +20,12 @@ attributed_touches as (
 joined_conversion_events as (
 
     select
+        {{ generate_surrogate_key([
+            'attributed_touches.model_id',
+            'conversion_events.model_id',
+            'attributed_touches.touch_event_id',
+            'conversion_events.conversion_event_id'
+            ]) }} as surrogate_key,
         conversion_events.conversion_segmentation_id,
         conversion_events.conversion_event_id,
         conversion_events.conversion_timestamp,

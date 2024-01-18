@@ -1,0 +1,5 @@
+event,timestamp,segmentation,type
+739982bb-f169-40d0-814d-ff633db562c0,2022-05-12 00:54:19,user1@tasman.ai,purchase
+1e0c4442-03ef-40bd-a5b8-2cfc77457903,2022-05-21 11:31:37,user2@tasman.ai,purchase
+da9360ef-f52e-4572-aa98-128c17d97a41,2022-06-07 07:08:37,user3@tasman.ai,lead
+be62daba-e4d2-4998-a057-8a3b25f2e9e3,2022-06-17 06:48:26,user3@tasman.ai,purchase

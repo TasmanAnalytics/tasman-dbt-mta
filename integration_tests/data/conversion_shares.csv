@@ -1,0 +1,8 @@
+model_id,spec,share
+first_touch,1,1
+first_touch_7_day,1,1
+first_touch_30_day,1,1
+w_shaped_30_days,1,0.3
+w_shaped_30_days,2,0.3
+w_shaped_30_days,3,0.3
+w_shaped_30_days,4,0.1

@@ -1,0 +1,40 @@
+
+name: 'tasman_dbt_mta_integration_tests'
+version: '1.0.0'
+config-version: 2
+
+profile: 'tasman_dbt_mta_integration_tests'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["data"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target" 
+clean-targets: ["target", "dbt_packages"]
+
+
+models:
+  tasman_dbt_mta_integration_tests:
+
+
+vars:
+  tasman_dbt_mta:
+    incremental: "true"
+    touches_model: "{{ ref('stg_touch_events') }}"
+    touches_event_id_field: "touch_event_id"
+    touches_timestamp_field: "touch_timestamp"
+    touches_segmentation_id_field: "user_id"
+    conversions_model: "{{ ref('stg_conversion_events')}}"
+    conversions_event_id_field: "conversion_event_id"
+    conversions_timestamp_field: "conversion_timestamp"
+    conversions_segmentation_id_field: "user_id"
+    conversion_rules: "{{ ref('conversion_rules') }}"
+    touch_rules: "{{ ref('touch_rules') }}"
+    attribution_rules: "{{ ref('attribution_rules') }}"
+    conversion_shares: "{{ ref('conversion_shares') }}"
+    attribution_windows: "{{ ref('attribution_windows') }}"
+    snowflake_prod_warehouse: ""
+    snowflake_dev_warehouse: ""

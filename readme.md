@@ -6,15 +6,15 @@
 </picture>
 </a>
 
-> We are the boutique analytics consultancy that turns disorganised data into real business value.
+> We are the boutique analytics consultancy that turns disorganised data into real business value. [Get in touch](https://tasman.ai/contact/) to learn more about how Tasman can help solve your organisations data challenges.
 
 # Multi-Touch Attribution Engine
 
 **Key Features:**
-- 🔩 Boolean-algebra based filter definitions, allowing fine control of the touches and conversions that are analysed for each attribution model without editing any SQL.
-- 🪛 Reconfigurable positional and time-based attribution models.
-- 🔀 Multiple concurrent models, enabling robust multi-model analyses.
-- ⏰ Fine-grain attribution window control.
+- 🔩 Boolean-algebra rule-based configurations avoiding custom SQL requirements
+- 🪛 Reconfigurable positional and time-based attribution models
+- 🔀 Multiple concurrent models, enabling robust, flexible, multi-model analyses
+- ⏰ Fine-grain attribution window control
 - ➕ Optional incremental materialisations
 - ❄️ Custom warehouse selection (Snowflake only)
 
@@ -44,7 +44,7 @@ The engine has two primary output models, attributed touches and attributed conv
 
 ## Performance Tracking 🚀
 
-Attribution is tricky and it'ss unlikely that optimal results will be achieved during the initial implementation of this engine - this is because the quality of the outputs are entirely dependent on the quality of the inputs along with tuning of the configurations. As such, an [`performance_history`](models/tasman_mta__performance_history.sql) model has been added that will keep track of each time the attribution engine is run, and collect useful statistics that can help accelerate the implementation as well as monitor key metrics such as attribution rate.
+Attribution is tricky and it's unlikely that optimal results will be achieved during the initial implementation of this engine - this is because the quality of the outputs are entirely dependent on the quality of the inputs along with tuning of the configurations. As such, a [`performance_history`](models/tasman_mta__performance_history.sql) model has been added that will keep track of each time the attribution engine is run, and collect useful statistics that can help accelerate the implementation as well as monitor key metrics such as attribution rate.
 
 ## Current Limitations ⚠️
 

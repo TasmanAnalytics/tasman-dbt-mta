@@ -19,7 +19,6 @@ clean-targets: ["target", "dbt_packages"]
 models:
   tasman_dbt_mta_integration_tests:
 
-
 vars:
   tasman_dbt_mta:
     incremental: "true"

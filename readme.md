@@ -25,6 +25,8 @@ Multi-touch attribution is a method of marketing measurement that accounts for a
 
 The core functionality of an attribution engine is its ability to match touches to conversions based on a series of rules, known as 'attribution models'.
 
+Multi-touch attribution can be cross-device, however with the increased privacy constraints introduced by Apple in iOS 14.5, deterministic methods of attribution such as those in this engine are generally ineffective. For mobile attribution, we recommend checking Mobile Measurement Partners (MMPs) with support for Apple's SKAdNetwork such as [Appsflyer](https://www.appsflyer.com/) or [Adjust](https://www.adjust.com/).
+
 >Examples of attribution models that can be configured with this engine include:
 >- Last touch - 100% conversion credit is applied to the touch point immediately before the conversion event
 >- First touch - 100% conversion credit is applied to the earliest occuring touch point

@@ -57,4 +57,4 @@ jobs:
       - name: dbt build on Snowflake
         id: dbt-build-snowflake
         run: |
-          potery run dbt build --full-refresh --target snowflake-ci
+          poetry run dbt build --full-refresh --target snowflake-ci

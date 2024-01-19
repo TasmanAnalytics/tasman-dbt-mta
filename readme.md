@@ -6,7 +6,7 @@
 </picture>
 </a>
 
-> We are the boutique analytics consultancy that turns disorganised data into real business value. [Get in touch](https://tasman.ai/contact/) to learn more about how Tasman can help solve your organisations data challenges.
+>We are the boutique analytics consultancy that turns disorganised data into real business value. [Get in touch](https://tasman.ai/contact/) to learn more about how Tasman can help solve your organisations data challenges.
 
 # Multi-Touch Attribution Engine
 
@@ -25,7 +25,7 @@ Multi-touch attribution is a method of marketing measurement that accounts for a
 
 The core functionality of an attribution engine is its ability to match touches to conversions based on a series of rules, known as 'attribution models'.
 
-Multi-touch attribution can be cross-device, however with the increased privacy constraints introduced by Apple in iOS 14.5, deterministic methods of attribution such as those in this engine are generally ineffective. For mobile attribution, we recommend checking Mobile Measurement Partners (MMPs) with support for Apple's SKAdNetwork such as [Appsflyer](https://www.appsflyer.com/) or [Adjust](https://www.adjust.com/).
+Multi-touch attribution can be cross-device, however with the increased privacy constraints introduced by Apple in iOS 14.5 and more generally across the industry, deterministic methods of attribution such as those in this engine are generally ineffective for mobile. For mobile attribution, we recommend checking Mobile Measurement Partners (MMPs) with support for Apple's SKAdNetwork such as [Appsflyer](https://www.appsflyer.com/) or [Adjust](https://www.adjust.com/).
 
 >Examples of attribution models that can be configured with this engine include:
 >- Last touch - 100% conversion credit is applied to the touch point immediately before the conversion event

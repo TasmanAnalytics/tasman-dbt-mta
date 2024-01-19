@@ -1,7 +1,7 @@
 tasman_integration_tests:
   outputs:
     snowflake-ci:
-      account: xt59823.eu-west-2.aws
+      account: {{ env_var('SNOWFLAKE_ACCOUNT') }}
       client_session_keep_alive: true
       database: {{ env_var('SNOWFLAKE_DATABASE_CI') }}
       user: {{ env_var('SNOWFLAKE_USER_CI') }}

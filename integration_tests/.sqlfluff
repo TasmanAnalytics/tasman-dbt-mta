@@ -1,0 +1,57 @@
+[sqlfluff]
+dialect = snowflake
+templater = dbt
+exclude_rules = structure.column_order, convention.not_equal, references.keywords, aliasing.unused
+max_line_length = 500
+
+[sqlfluff:templater:dbt]
+project_dir = ./
+profile = tasman_dbt_mta_integration_tests
+
+[sqlfluff:templater:jinja]
+apply_dbt_builtins = True
+
+[sqlfluff:indentation]
+indented_on_contents = False
+template_blocks_indent = False
+tab_space_size = 4
+indent_unit = space
+
+[sqlfluff:rules:capitalisation.keywords]
+# Keywords
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.identifiers]
+# Unquoted identifiers
+extended_capitalisation_policy = lower
+
+[sqlfluff:rules:layout.long_lines]
+# Line length
+ignore_comment_lines = True
+ignore_comment_clauses = True
+
+[sqlfluff:rules:capitalisation.functions]
+# Function names
+extended_capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.literals]
+# Null & Boolean Literals
+capitalisation_policy = lower
+
+[sqlfluff:rules:ambiguous.column_references]
+# GROUP BY/ORDER BY column references
+group_by_and_order_by_style = explicit
+
+[sqlfluff:rules:references.special_chars]
+# Special characters in identifiers
+unquoted_identifiers_policy = all
+quoted_identifiers_policy = none
+allow_space_in_identifier = False
+
+[sqlfluff:rules:capitalisation.types]
+# Data Types
+extended_capitalisation_policy = lower
+
+[sqlfluff:rules:convention.casting_style]
+# SQL type casting
+preferred_type_casting_style = shorthand

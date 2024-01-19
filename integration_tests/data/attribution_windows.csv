@@ -1,0 +1,5 @@
+model_id,att_window,time_seconds
+first_touch,all_time,0
+first_touch_7_day,7 day,604800
+first_touch_30_day,30 day,2629746
+w_shaped_30_days,30 day,2629746

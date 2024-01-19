@@ -1,0 +1,6 @@
+model_id,conversion_category,rule,part,attribute,type,relation,value
+first_touch,purchase,1,1,conversion_type,string,=,purchase
+first_touch_7_day,purchase,1,1,conversion_type,string,=,purchase
+first_touch_30_day,purchase,1,1,conversion_type,string,=,purchase
+w_shaped_30_days,lead,1,1,conversion_type,string,=,lead
+w_shaped_30_days,purchase,1,1,conversion_type,string,=,purchase

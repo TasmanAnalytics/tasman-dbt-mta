@@ -1,0 +1,8 @@
+model_id,touch_category,rule,part,attribute,type,relation,value
+first_touch,all_channels,1,1,touch_channel,string,<>,''
+first_touch_7_day,all_channels,1,1,touch_channel,string,<>,''
+first_touch_30_day,all_channels,1,1,touch_channel,string,<>,''
+w_shaped_30_days,all_channels,1,1,touch_channel,string,<>,''
+first_touch_2022_paid_search,all_channels_2022_onwards,1,1,touch_channel,string,<>,'paid-search'
+first_touch_2022_paid_search,all_channels_2022_onwards,1,2,touch_timestamp,string,>=,'2022-01-01'
+first_touch_2022_paid_search,all_channels_2022_onwards,1,3,touch_timestamp,string,<=,'2022-12-31'

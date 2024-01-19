@@ -1,4 +1,4 @@
-select * from {{ ref('int_tasman_mta__attributed_conversions') }}
+select * from {{ ref('tasman_mta__attributed_conversions') }}
 
 where
     --filter criteria

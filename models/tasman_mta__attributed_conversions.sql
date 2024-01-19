@@ -10,11 +10,11 @@
 with
 
 conversion_events as (
-    select * from {{ ref('int_tasman_mta__filtered_conversion_events') }}
+    select * from {{ ref('tasman_mta__filtered_conversion_events') }}
 ),
 
 attributed_touches as (
-    select * from {{ ref('int_tasman_mta__attributed_touches') }}
+    select * from {{ ref('tasman_mta__attributed_touches') }}
 ),
 
 joined_conversion_events as (

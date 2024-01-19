@@ -15,7 +15,7 @@
 - 🪛 Reconfigurable positional and time-based attribution models.
 - 🔀 Multiple concurrent models, enabling robust multi-model analyses.
 - ⏰ Fine-grain attribution window control.
-- ➕ Fully incremental materialisations
+- ➕ Optional incremental materialisations
 - ❄️ Custom warehouse selection (Snowflake only)
 
 

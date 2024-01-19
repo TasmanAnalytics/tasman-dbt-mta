@@ -1,4 +1,4 @@
-name: ci check
+name: CI
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci-checks:
+  ci-check-snowflake:
     runs-on: ubuntu-latest
     defaults:
       run:

@@ -9,11 +9,11 @@
 with
 
 touches as (
-    select * from {{ ref('int_tasman_mta__filtered_touch_events') }}
+    select * from {{ ref('tasman_mta__filtered_touch_events') }}
 ),
 
 conversions as (
-    select * from {{ ref('int_tasman_mta__filtered_conversion_events') }}
+    select * from {{ ref('tasman_mta__filtered_conversion_events') }}
 ),
 
 attribution_rules as (

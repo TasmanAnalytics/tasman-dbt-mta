@@ -47,7 +47,7 @@ filtered_touches_by_model as (
         model_id,
         count(distinct touch_event_id) as filtered_touches
     from
-        {{ ref('int_tasman_mta__filtered_touch_events') }}
+        {{ ref('tasman_mta__filtered_touch_events') }}
     group by
         model_id
 ),
@@ -57,7 +57,7 @@ attributed_touches_by_model as (
         model_id,
         count(distinct touch_event_id) as attributed_touches
     from
-        {{ ref('int_tasman_mta__attributed_touches') }}
+        {{ ref('tasman_mta__attributed_touches') }}
     where
         conversion_event_id is not null
     group by
@@ -85,7 +85,7 @@ filtered_conversions_by_model as (
         model_id,
         count(distinct conversion_event_id) as filtered_conversions
     from
-        {{ ref('int_tasman_mta__filtered_conversion_events') }}
+        {{ ref('tasman_mta__filtered_conversion_events') }}
     group by
         model_id
 ),
@@ -95,7 +95,7 @@ attributed_conversions_by_model as (
         model_id,
         count(distinct conversion_event_id) as attributed_conversions
     from
-        {{ ref('int_tasman_mta__attributed_conversions') }}
+        {{ ref('tasman_mta__attributed_conversions') }}
     where
         touch_event_id is not null
     group by
@@ -107,7 +107,7 @@ unattributed_conversions_by_model as (
     model_id,
         count(distinct conversion_event_id) as unattributed_conversions
     from
-        {{ ref('int_tasman_mta__attributed_conversions') }}
+        {{ ref('tasman_mta__attributed_conversions') }}
     where
         touch_event_id is null
     group by
@@ -119,7 +119,7 @@ conversion_share_by_model as (
         model_id,
         sum(conversion_share) as total_conversion_share
     from
-        {{ ref('int_tasman_mta__attributed_conversions') }}
+        {{ ref('tasman_mta__attributed_conversions') }}
     group by
         model_id  
 ),

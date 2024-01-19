@@ -37,7 +37,7 @@ raw_event_attributes as (
     select
         conversion_events.{{var('conversions_event_id_field')}} as conversion_event_id,
         conversion_events.{{var('conversions_timestamp_field')}} as conversion_timestamp,
-        conversion_events.{{var('conversions_segmentation_id_field')}} as conversion_segmentation_id,
+        conversion_events.{{var('conversions_user_id_field')}} as conversion_user_id,
         conversion_attributes.attribute as attribute,
         case
         {% for attribute in attributes -%}
@@ -117,7 +117,7 @@ rules_bitsums as ( --calculates the sum of the of the bits per rule needed to va
 matched_parts as ( --returns all matched parts of the rules from the event stream (contains duplicates, handled downstreams.)
 
     select
-        event_attributes.conversion_segmentation_id,
+        event_attributes.conversion_user_id,
         event_attributes.conversion_event_id,
         event_attributes.conversion_timestamp,
         event_attributes.attribute,
@@ -177,7 +177,7 @@ matched_parts as ( --returns all matched parts of the rules from the event strea
 matched_rules as ( -- returns fulfilled rules which indicates that an event matches a conversion category
 
     select
-        matched_parts.conversion_segmentation_id,
+        matched_parts.conversion_user_id,
         matched_parts.conversion_event_id,
         matched_parts.conversion_timestamp,
         matched_parts.model_id,
@@ -194,7 +194,7 @@ matched_rules as ( -- returns fulfilled rules which indicates that an event matc
             and rules_bitsums.rule = matched_parts.rule
 
     group by
-        matched_parts.conversion_segmentation_id,
+        matched_parts.conversion_user_id,
         matched_parts.conversion_event_id,
         matched_parts.conversion_timestamp,
         matched_parts.model_id,
@@ -213,7 +213,7 @@ matched_categories as (-- Return one event record per conversion category (for t
             'model_id',
             'conversion_event_id'
             ]) }} as surrogate_key,
-        conversion_segmentation_id,
+        conversion_user_id,
         conversion_event_id,
         conversion_timestamp,
         model_id,

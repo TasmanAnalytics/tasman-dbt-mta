@@ -10,8 +10,8 @@ models:
           - not_null
           - unique
 
-      - name: conversion_segmentation_id
-        description: "Identifier that specifies how conversion events are segmented. Segementation ID across touches and conversions must match for successful attribution. Typically this might be a user ID."
+      - name: conversion_user_id
+        description: "Identifier for the user associated with the conversion"
         tests:
           - not_null
 
@@ -44,8 +44,8 @@ models:
         tests:
           - in_past
       
-      - name: touch_segmentation_id
-        description: "The segmentation ID of the touch."
+      - name: touch_user_id
+        description: "Identifier for the user associated with the touch"
 
       - name: touch_category
         description: "The category of the touch, as defined in the touch rules seed."
@@ -96,8 +96,8 @@ models:
           - not_null
           - unique
 
-      - name: touch_segmentation_id
-        description: "The segmentation ID of the touch."
+      - name: touch_user_id
+        description: "Identifier for the user associated with the touch"
         tests:
           - not_null
 
@@ -185,8 +185,8 @@ models:
           - not_null
           - unique
 
-      - name: conversion_segmentation_id
-        description: "Identifier that specifies how conversion events are segmented. Segementation ID across touches and conversions must match for successful attribution. Typically this might be a user ID."
+      - name: conversion_user_id
+        description: "Identifier for the user associated with the conversion"
         tests:
           - not_null
 
@@ -220,8 +220,8 @@ models:
           - not_null
           - unique
 
-      - name: touch_segmentation_id
-        description: "Identifier that specifies how touch events are segmented. Segementation ID across touches and conversions must match for successful attribution. Typically this might be a user ID."
+      - name: touch_user_id
+        description: "Identifier for the user associated with the touch"
         tests:
           - not_null
 

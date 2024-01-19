@@ -9,7 +9,7 @@ where
     --success criteria
     and not (
         touch_event_id = 'cb3a11ab-61ae-4e09-a1c6-8a49c44aa6ae'
-        or touch_segmentation_id = 'user1@tasman.ai'
+        or touch_user_id = 'user1@tasman.ai'
         or convert_touch_count = 3
         or convert_seq_up = 1
         or convert_seq_down = 3

@@ -18,9 +18,9 @@ jobs:
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       SNOWFLAKE_USER_CI: ${{ secrets.SNOWFLAKE_CI_USER }}
       SNOWFLAKE_PASSWORD_CI: ${{ secrets.SNOWFLAKE_CI_USER_PASSWORD }}
-      SNOWFLAKE_DATABASE_CI: ${{ secrets.SNOWFLAKE_CI_DATABASE }}
-      SNOWFLAKE_ROLE_CI: ${{ secrets.SNOWFLAKE_CI_ROLE }}
-      SNOWFLAKE_WAREHOUSE_CI: ${{ secrets.SNOWFLAKE_CI_WAREHOUSE }}
+      SNOWFLAKE_DATABASE_CI: DBT_MTA_PACKAGE
+      SNOWFLAKE_ROLE_CI: PACKAGE_CI_ROLE
+      SNOWFLAKE_WAREHOUSE_CI: PACKAGE_DEV_WH
       SNOWFLAKE_SCHEMA_CI: DBT_CI_${{github.event.number}}_${{ github.actor }} # Creates a unique schema for each PR
     steps:
       - name: Checkout branch

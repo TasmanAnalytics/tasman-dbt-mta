@@ -1,0 +1,13 @@
+tasman_integration_tests:
+  outputs:
+    snowflake-ci:
+      account: xt59823.eu-west-2.aws
+      client_session_keep_alive: true
+      database: {{ env_var('SNOWFLAKE_DATABASE_CI') }}
+      user: {{ env_var('SNOWFLAKE_USER_CI') }}
+      password: {{ env_var('SNOWFLAKE_PASSWORD_CI') }}
+      role: {{ env_var('SNOWFLAKE_ROLE_CI') }}
+      schema: {{ env_var('SNOWFLAKE_SCHEMA_CI') }}
+      warehouse: {{ env_var('SNOWFLAKE_WAREHOUSE_CI') }}
+      threads: 12
+      type: snowflake

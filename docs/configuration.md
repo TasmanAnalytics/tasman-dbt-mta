@@ -24,11 +24,11 @@ vars:
     touches_model: "{{ ref() }}"
     touches_event_id_field: ""
     touches_timestamp_field: ""
-    touches_segmentation_id_field: ""
+    touches_user_id_field: ""
     conversions_model: "{{ ref()}}"
     conversions_event_id_field: ""
     conversions_timestamp_field: ""
-    conversions_segmentation_id_field: ""
+    conversions_user_id_field: ""
     conversion_rules: "{{ ref() }}"
     touch_rules: "{{ ref() }}"
     attribution_rules: "{{ ref() }}"
@@ -43,12 +43,12 @@ vars:
 - `touches_timestamp_field`: Field within the `touches_model` that contains timestamps for each touch point. 
   - Touches must occur in the past, and there are column tests throughout the package to validate this.  
 - `touches_event_id_field`: Field within the `touches_model` that contains a unique indentifier for each touch point  
-- `touches_segmentation_id_field`: Field within the `touches_model` that used to segment the touches. Typically this might be a user ID  
+- `touches_user_id_field`: Field within the `touches_model` that contains the user identifier
 - `conversions_model`: Reference to the model containing conversion data points  
 - `conversions_timestamp_field`: Field within the `conversions_model` that contains timestamps for each conversion.
   - Conversions must occur in the past, and there are column tests throughout the package to validate this.  
 - `conversions_event_id_field`: Field within the `conversions_model` that contains a unique indentifier for each conversion  
-- `conversions_segmentation_id_field`: Field within the `conversions_model` that used to segment the conversions. Typically this might be a user ID  
+- `conversions_user_id_field`: Field within the `conversions_model` that contains the user identifier 
 - `conversion_rules`: A seed file containing rules that can be used to filter specific conversions for each attribution model  
 - `touch_rules`: A seed file containing rules that can be used to filter specific touches for each attribution model  
 - `attribution_rules`: A seed file containing rules that are used to determine how touches are attributed to conversions (specs) for each attribution model  

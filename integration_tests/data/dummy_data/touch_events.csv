@@ -1,4 +1,4 @@
-event,timestamp,segmentation,channel
+event,timestamp,user,channel
 3f6931bc-785c-46fa-b868-6cac0bac549e,2022-04-01 05:44:29,user1@tasman.ai,paid-search
 00df6f46-39eb-48e8-84e5-45d7abed2502,2022-04-15 12:30:23,user1@tasman.ai,direct
 cb3a11ab-61ae-4e09-a1c6-8a49c44aa6ae,2022-05-06 00:54:19,user1@tasman.ai,direct

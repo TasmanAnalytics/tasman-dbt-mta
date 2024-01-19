@@ -37,7 +37,7 @@ raw_event_attributes as (
     select
         touch_events.{{var('touches_event_id_field')}} as touch_event_id,
         touch_events.{{var('touches_timestamp_field')}} as touch_timestamp,
-        touch_events.{{var('touches_segmentation_id_field')}} as touch_segmentation_id,
+        touch_events.{{var('touches_user_id_field')}} as touch_user_id,
         touch_attributes.attribute as attribute,
         case
         {% for attribute in attributes -%}
@@ -116,7 +116,7 @@ rules_bitsums as ( --calculates the sum of the of the bits per rule needed to va
 matched_parts as ( --returns all matched parts of the rules from the event stream (contains duplicates, handled downstreams.)
 
     select
-        event_attributes.touch_segmentation_id,
+        event_attributes.touch_user_id,
         event_attributes.touch_event_id,
         event_attributes.touch_timestamp,
         event_attributes.attribute,
@@ -176,7 +176,7 @@ matched_parts as ( --returns all matched parts of the rules from the event strea
 matched_rules as ( -- returns fulfilled rules which indicates that an event matches a touch touch_category
 
     select
-        matched_parts.touch_segmentation_id,
+        matched_parts.touch_user_id,
         matched_parts.touch_event_id,
         matched_parts.touch_timestamp,
         matched_parts.model_id,
@@ -193,7 +193,7 @@ matched_rules as ( -- returns fulfilled rules which indicates that an event matc
             and rules_bitsums.rule = matched_parts.rule
 
     group by
-        matched_parts.touch_segmentation_id,
+        matched_parts.touch_user_id,
         matched_parts.touch_event_id,
         matched_parts.touch_timestamp,
         matched_parts.model_id,
@@ -212,7 +212,7 @@ matched_categories as (-- Return one event record per touch_category (for the ca
             'model_id',
             'touch_event_id'
             ]) }} as surrogate_key,
-        touch_segmentation_id,
+        touch_user_id,
         touch_event_id,
         touch_timestamp,
         model_id,

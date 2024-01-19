@@ -1,10 +1,7 @@
 name: ci check
 
-# Execute only when PR is raised and changes made to `/transformation` folder
-#   or the workflow itself
 on:
   pull_request:
-  # Note: Not using `paths` because it doesn't work with repo branch rule (expect specific checks to pass). Using conditional in each step instead
 
 # Automatically cancel any previous runs of this workflow
 concurrency:
@@ -25,12 +22,10 @@ jobs:
       SNOWFLAKE_ROLE_CI: ${{ secrets.SNOWFLAKE_CI_ROLE }}
       SNOWFLAKE_WAREHOUSE_CI: ${{ secrets.SNOWFLAKE_CI_WAREHOUSE }}
       SNOWFLAKE_SCHEMA_CI: DBT_CI_${{github.event.number}}_${{ github.actor }} # Creates a unique schema for each PR
-
     steps:
       - name: Checkout branch
         id: checkout-branch
         uses: actions/checkout@v3
-
 
       - name: Install Poetry
         id: install-poetry
@@ -59,7 +54,6 @@ jobs:
         run: |
           poetry run dbt compile --target snowflake-ci
           poetry run dbt debug --target snowflake-ci
-
 
       - name: dbt build on Snowflake
         id: dbt-build-snowflake

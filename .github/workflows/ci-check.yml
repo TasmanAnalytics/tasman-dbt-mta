@@ -50,9 +50,8 @@ jobs:
           poetry run dbt deps
 
       - name: Check dbt compiles and CI Profiles work
-        id: check-dbt-compiles-and-ci-profiles-work
+        id: check-dbt-ci-profiles-work
         run: |
-          poetry run dbt compile --target snowflake-ci
           poetry run dbt debug --target snowflake-ci
 
       - name: dbt build on Snowflake

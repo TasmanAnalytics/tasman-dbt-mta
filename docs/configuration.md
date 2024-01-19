@@ -38,22 +38,24 @@ vars:
     snowflake_dev_warehouse: ""
 ```
 
-`incremental`: "true" or "false" depending on whether the model should run using incremental models or not  
-`touches_model`: Reference to the model containing touch data points. This can be touches or sessions - [read more here](#touches-vs-sessions).  
-`touches_timestamp_field`: Field within the `touches_model` that contains timestamps for each touch point  
-`touches_event_id_field`: Field within the `touches_model` that contains a unique indentifier for each touch point  
-`touches_segmentation_id_field`: Field within the `touches_model` that used to segment the touches. Typically this might be a user ID  
-`conversions_model`: Reference to the model containing conversion data points  
-`conversions_timestamp_field`: Field within the `conversions_model` that contains timestamps for each conversion  
-`conversions_event_id_field`: Field within the `conversions_model` that contains a unique indentifier for each conversion  
-`conversions_segmentation_id_field`: Field within the `conversions_model` that used to segment the conversions. Typically this might be a user ID  
-`conversion_rules`: A seed file containing rules that can be used to filter specific conversions for each attribution model  
-`touch_rules`: A seed file containing rules that can be used to filter specific touches for each attribution model  
-`attribution_rules`: A seed file containing rules that are used to determine how touches are attributed to conversions (specs) for each attribution model  
-`conversion_shares`: A seed file that maps to each attribution spec to determine the credit awarded to touches meeting each rule for each attribution model  
-`attribution_windows`: A seed file that determines the maximum time between a touch and its conversion for each attribution model  
-`snowflake_prod_warehouse`: This is the snowflake warehouse that should be used for when the target = 'prod'. An empty string will use the profile default warehouse. Not required for bigquery connections.  
-`snowflake_dev_warehouse`: This is the snowflake warehouse that should be used for when the target = 'dev'. An empty string will use the profile default warehouse. Not required for bigquery connections.  
+- `incremental`: "true" or "false" depending on whether the model should run using incremental models or not  
+- `touches_model`: Reference to the model containing touch data points. This can be touches or sessions - [read more here](#touches-vs-sessions).  
+- `touches_timestamp_field`: Field within the `touches_model` that contains timestamps for each touch point. 
+  - Touches must occur in the past, and there are column tests throughout the package to validate this.  
+- `touches_event_id_field`: Field within the `touches_model` that contains a unique indentifier for each touch point  
+- `touches_segmentation_id_field`: Field within the `touches_model` that used to segment the touches. Typically this might be a user ID  
+- `conversions_model`: Reference to the model containing conversion data points  
+- `conversions_timestamp_field`: Field within the `conversions_model` that contains timestamps for each conversion.
+  - Conversions must occur in the past, and there are column tests throughout the package to validate this.  
+- `conversions_event_id_field`: Field within the `conversions_model` that contains a unique indentifier for each conversion  
+- `conversions_segmentation_id_field`: Field within the `conversions_model` that used to segment the conversions. Typically this might be a user ID  
+- `conversion_rules`: A seed file containing rules that can be used to filter specific conversions for each attribution model  
+- `touch_rules`: A seed file containing rules that can be used to filter specific touches for each attribution model  
+- `attribution_rules`: A seed file containing rules that are used to determine how touches are attributed to conversions (specs) for each attribution model  
+- `conversion_shares`: A seed file that maps to each attribution spec to determine the credit awarded to touches meeting each rule for each attribution model  
+- `attribution_windows`: A seed file that determines the maximum time between a touch and its conversion for each attribution model  
+- `snowflake_prod_warehouse`: **(Snowflake connections only)** This is the snowflake warehouse that should be used for when the target = 'prod'. An empty string will use the profile default warehouse.
+- `snowflake_dev_warehouse`: **(Snowflake connections only)** This is the snowflake warehouse that should be used for when the target = 'dev'. An empty string will use the profile default warehouse.
 
 
 # Configuring the Models
@@ -99,6 +101,7 @@ w_shaped_30_days,purchase,1,1,conversion_type,string,=,purchase
 ```
 
 **Schema:**
+- **`model_id`:** The identifier for the attribution model that the rule corresponds to.
 - **`touch_category` / `conversion_category`:** A text field that can be used to describe the category of touches or conversions for the model. This provides a mechanism to add additional attribution specific categorisations to the touches and conversions.  
 - **`rule`:** A 1-indexed integer defining the rule number for that touch category. Each rule is evaluated with OR logic, so if a category has 2 rules, the logic is rule 1 OR rule 2 has to be met for the touch to be assigned that category.  
 - **`part`:** A 1-indexed integer defining parts of a rule. Each rule part is considered with AND logic, so if a rule has 2 parts, the logic is part 1 AND part 2 has to be met for the touch to be evaluated **true** against that rule.  
@@ -140,13 +143,13 @@ w_shaped_30_days,4,2,2,conversion_category,=,purchase
 
 ```
 **Schema:**
-
+- **`model_id`:** The identifier for the attribution model that the rule corresponds to.
 - **`spec`:** Short for specification, each spec defines the rule set of a particular attribution model, and can be assigned a conversion share value. In the example above, it can be seen that 'single touch' models such as first touch and last touch only have 1 spec, whereas more complex multi-touch or multi-conversion models will have more than one spec.
 > N.B. where a spec matches than one touch, the conversion share is split equally between the touches.
 
 - **`rule`:** A 1-indexed integer defining the rule number for that spec. Each rule is evaluated with OR logic, so if a category has 2 rules, the logic is rule 1 OR rule 2 has to be met for the touch to be assigned that category.
 - **`part`:** A 1-indexed integer defining parts of a rule. Each rule part is considered with AND logic, so if a rule has 2 parts, the logic is part 1 AND part 2 has to be met for the touch to be evaluated **true** against that rule.
-- `attribute`: The derived property that is being evaluated for the rule part. If the attribute doesn't match any fields in the model then logically is will always output **false**.  Properties available are: 
+- **`attribute`**: The derived property that is being evaluated for the rule part. If the attribute doesn't match any fields in the model then logically is will always output **false**.  Properties available are: 
   - `touch_category`: The category of the touch as per the touch rules
   - `conversion_category`: The category of the conversion as per the conversion rules
   - `convert_touch_count`: The total number of attributed touches.
@@ -184,9 +187,10 @@ w_shaped_30_days,2,0.3
 w_shaped_30_days,3,0.3
 w_shaped_30_days,4,0.1
 ```
-
-`spec`: The spec within the attribution rules seed that the share is to be applied to.  
-`share`: The decimal percentage share that is granted to touches matching that spec. This share is split equally between all matching touches.
+**Schema:**
+- **`model_id`:** The identifier for the attribution model that the rule corresponds to.
+- **`spec`:** The spec within the attribution rules seed that the share is to be applied to.  
+- **`share`:** The decimal percentage share that is granted to touches matching that spec. This share is split equally between all matching touches.
 
 > Example U-Shaped model  
 > 6 touches happen before conversion, the shares are split as follows:
@@ -218,9 +222,10 @@ u_shaped_purchase_all_time,all time,0
 
 w_shaped_30_days,30 day,2629746
 ```
-
-`att_window`: A string field used to describe the attribution window as plain text. This is passed as metadata in the output table as additional context.  
-`time_seconds`: The maximum time in seconds allowed between a touch and conversion.
+**Schema:**
+- **`model_id`:** The identifier for the attribution model that the rule corresponds to.
+- **`att_window`:** A string field used to describe the attribution window as plain text. This is passed as metadata in the output table as additional context.  
+- **`time_seconds`:** The maximum time in seconds allowed between a touch and conversion.
 
 
 # Touches vs Sessions

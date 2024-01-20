@@ -1,7 +1,7 @@
 {% if var('incremental') == 'true' %}
-    {{config(materialized='incremental', schema='attribution', snowflake_warehouse=get_warehouse())}}
+    {{config(materialized='incremental', snowflake_warehouse=get_warehouse())}}
 {% else %}
-    {{config(materialized='table', schema='attribution', snowflake_warehouse=get_warehouse())}}
+    {{config(materialized='table', snowflake_warehouse=get_warehouse())}}
 {% endif %}
 
 with

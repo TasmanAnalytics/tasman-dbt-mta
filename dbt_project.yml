@@ -9,3 +9,7 @@ target-path: "target"
 clean-targets: ["target", "dbt_modules", "dbt_packages"]
 macro-paths: ["macros"]
 log-path: "logs"
+
+models:
+  tasman_dbt_mta:
+    +schema: tasman_mta

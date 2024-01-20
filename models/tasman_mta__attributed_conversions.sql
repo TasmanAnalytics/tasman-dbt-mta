@@ -2,7 +2,6 @@
 {{
     config(
         materialized='table',
-        schema='attribution',
         snowflake_warehouse=get_warehouse()
     )
 }}

@@ -6,7 +6,7 @@ max_line_length = 500
 
 [sqlfluff:templater:dbt]
 project_dir = ./
-profile = tasman_dbt_mta_integration_tests
+profile = tasman_integration_tests
 
 [sqlfluff:templater:jinja]
 apply_dbt_builtins = True

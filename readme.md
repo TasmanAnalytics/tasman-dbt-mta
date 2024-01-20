@@ -6,15 +6,15 @@
 </picture>
 </a>
 
-> We are the boutique analytics consultancy that turns disorganised data into real business value.
+>We are the boutique analytics consultancy that turns disorganised data into real business value. [Get in touch](https://tasman.ai/contact/) to learn more about how Tasman can help solve your organisations data challenges.
 
 # Multi-Touch Attribution Engine
 
 **Key Features:**
-- 🔩 Boolean-algebra based filter definitions, allowing fine control of the touches and conversions that are analysed for each attribution model without editing any SQL.
-- 🪛 Reconfigurable positional and time-based attribution models.
-- 🔀 Multiple concurrent models, enabling robust multi-model analyses.
-- ⏰ Fine-grain attribution window control.
+- 🔩 Boolean-algebra rule-based configurations avoiding custom SQL requirements
+- 🪛 Reconfigurable positional and time-based attribution models
+- 🔀 Multiple concurrent models, enabling robust, flexible, multi-model analyses
+- ⏰ Fine-grain attribution window control
 - ➕ Optional incremental materialisations
 - ❄️ Custom warehouse selection (Snowflake only)
 
@@ -24,6 +24,8 @@
 Multi-touch attribution is a method of marketing measurement that accounts for all the touchpoints on the customer journey and designates a certain amount of credit to each channel. This enables marketers to analyse the value that each touchpoint has on driving a conversion.
 
 The core functionality of an attribution engine is its ability to match touches to conversions based on a series of rules, known as 'attribution models'.
+
+Multi-touch attribution can be cross-device, however with the increased privacy constraints introduced by Apple in iOS 14.5 and more generally across the industry, deterministic methods of attribution such as those in this engine are generally ineffective for mobile. For mobile attribution, we recommend checking Mobile Measurement Partners (MMPs) with support for Apple's SKAdNetwork such as [Appsflyer](https://www.appsflyer.com/) or [Adjust](https://www.adjust.com/).
 
 >Examples of attribution models that can be configured with this engine include:
 >- Last touch - 100% conversion credit is applied to the touch point immediately before the conversion event
@@ -44,7 +46,7 @@ The engine has two primary output models, attributed touches and attributed conv
 
 ## Performance Tracking 🚀
 
-Attribution is tricky and it'ss unlikely that optimal results will be achieved during the initial implementation of this engine - this is because the quality of the outputs are entirely dependent on the quality of the inputs along with tuning of the configurations. As such, an [`performance_history`](models/tasman_mta__performance_history.sql) model has been added that will keep track of each time the attribution engine is run, and collect useful statistics that can help accelerate the implementation as well as monitor key metrics such as attribution rate.
+Attribution is tricky and it's unlikely that optimal results will be achieved during the initial implementation of this engine - this is because the quality of the outputs are entirely dependent on the quality of the inputs along with tuning of the configurations. As such, a [`performance_history`](models/tasman_mta__performance_history.sql) model has been added that will keep track of each time the attribution engine is run, and collect useful statistics that can help accelerate the implementation as well as monitor key metrics such as attribution rate.
 
 ## Current Limitations ⚠️
 

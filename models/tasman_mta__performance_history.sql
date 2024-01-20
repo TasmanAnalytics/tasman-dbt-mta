@@ -1,7 +1,6 @@
 {{
     config(
         materialized='incremental',
-        schema='attribution',
         on_schema_change="sync_all_columns",
         snowflake_warehouse=get_warehouse(),
         full_refresh=false

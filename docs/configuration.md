@@ -38,24 +38,24 @@ vars:
     snowflake_dev_warehouse: ""
 ```
 
-- `incremental`: "true" or "false" depending on whether the model should run using incremental models or not  
-- `touches_model`: Reference to the model containing touch data points. This can be touches or sessions - [read more here](#touches-vs-sessions).  
-- `touches_timestamp_field`: Field within the `touches_model` that contains timestamps for each touch point. 
+- **`incremental`:** "true" or "false" depending on whether the model should run using incremental models or not  
+- **`touches_model`:** Reference to the model containing touch data points. This can be touches or sessions - [read more here](#touches-vs-sessions).  
+- **`touches_timestamp_field`:** Field within the `touches_model` that contains timestamps for each touch point. 
   - Touches must occur in the past, and there are column tests throughout the package to validate this.  
-- `touches_event_id_field`: Field within the `touches_model` that contains a unique indentifier for each touch point  
-- `touches_user_id_field`: Field within the `touches_model` that contains the user identifier
-- `conversions_model`: Reference to the model containing conversion data points  
-- `conversions_timestamp_field`: Field within the `conversions_model` that contains timestamps for each conversion.
+- **`touches_event_id_field`:** Field within the `touches_model` that contains a unique indentifier for each touch point  
+- **`touches_user_id_field`:** Field within the `touches_model` that contains the user identifier
+- **`conversions_model`:** Reference to the model containing conversion data points  
+- **`conversions_timestamp_field`:** Field within the `conversions_model` that contains timestamps for each conversion.
   - Conversions must occur in the past, and there are column tests throughout the package to validate this.  
-- `conversions_event_id_field`: Field within the `conversions_model` that contains a unique indentifier for each conversion  
-- `conversions_user_id_field`: Field within the `conversions_model` that contains the user identifier 
-- `conversion_rules`: A seed file containing rules that can be used to filter specific conversions for each attribution model  
-- `touch_rules`: A seed file containing rules that can be used to filter specific touches for each attribution model  
-- `attribution_rules`: A seed file containing rules that are used to determine how touches are attributed to conversions (specs) for each attribution model  
-- `conversion_shares`: A seed file that maps to each attribution spec to determine the credit awarded to touches meeting each rule for each attribution model  
-- `attribution_windows`: A seed file that determines the maximum time between a touch and its conversion for each attribution model  
-- `snowflake_prod_warehouse`: **(Snowflake connections only)** This is the snowflake warehouse that should be used for when the target = 'prod'. An empty string will use the profile default warehouse.
-- `snowflake_dev_warehouse`: **(Snowflake connections only)** This is the snowflake warehouse that should be used for when the target = 'dev'. An empty string will use the profile default warehouse.
+- **`conversions_event_id_field`:** Field within the `conversions_model` that contains a unique indentifier for each conversion  
+- **`conversions_user_id_field`:** Field within the `conversions_model` that contains the user identifier 
+- **`conversion_rules`:** A seed file containing rules that can be used to filter specific conversions for each attribution model  
+- **`touch_rules`:** A seed file containing rules that can be used to filter specific touches for each attribution model  
+- **`attribution_rules`:** A seed file containing rules that are used to determine how touches are attributed to conversions (specs) for each attribution model  
+- **`conversion_shares`:** A seed file that maps to each attribution spec to determine the credit awarded to touches meeting each rule for each attribution model  
+- **`attribution_windows`:** A seed file that determines the maximum time between a touch and its conversion for each attribution model  
+- **`snowflake_prod_warehouse`:** **(Snowflake connections only)** This is the snowflake warehouse that should be used for when the target = 'prod'. An empty string will use the profile default warehouse.
+- **`snowflake_dev_warehouse`:** **(Snowflake connections only)** This is the snowflake warehouse that should be used for when the target = 'dev'. An empty string will use the profile default warehouse.
 
 
 # Configuring the Models

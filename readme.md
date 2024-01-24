@@ -2,7 +2,7 @@
 [![tasman_logo][tasman_wordmark_cream]][tasman_website_dark_mode]
 
 ---
-*We are the boutique analytics consultancy that turns disorganised data into real business value. [Get in touch](https://tasman.ai/contact/) to learn more about how Tasman can help solve your organisations data challenges.*
+*We are the boutique analytics consultancy that turns disorganised data into real business value. [Get in touch][tasman_contact] to learn more about how Tasman can help solve your organisations data challenges.*
 
 # Multi-Touch Attribution Engine
 
@@ -56,7 +56,8 @@ This package has been written and is maintained by [Tasman Analytics](https://ta
 
 If you find a bug, or for any questions please open an issue on GitHub.
 
-[tasman_website_dark_mode]: https://tasman.ai#gh-dark-mode-only
-[tasman_website_light_mode]: https://tasman.ai#gh-light-mode-only
+[tasman_website_dark_mode]: https://tasman.ai?utm_source=github&utm_medium=internal-referral&utm_campaign=tasman-dbt-mta#gh-dark-mode-only
+[tasman_website_light_mode]: https://tasman.ai?utm_source=github&utm_medium=internal-referral&utm_campaign=tasman-dbt-mta#gh-light-mode-only
+[tasman_contact]: https://tasman.ai/contact?utm_source=github&utm_medium=internal-referral&utm_campaign=tasman-dbt-mta
 [tasman_wordmark_cream]: https://raw.githubusercontent.com/TasmanAnalytics/.github/master/images/tasman_wordmark_cream_500.png#gh-dark-mode-only
 [tasman_wordmark_black]: https://raw.githubusercontent.com/TasmanAnalytics/.github/master/images/tasman_wordmark_black_500.png#gh-light-mode-only

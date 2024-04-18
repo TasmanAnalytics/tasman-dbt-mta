@@ -1,5 +1,5 @@
 {%- macro generate_surrogate_key(field_list) -%}
-    {{ return(adapter.dispatch('generate_surrogate_key', 'dbt_utils')(field_list)) }}
+    {{ return(adapter.dispatch('generate_surrogate_key', 'tasman_dbt_mta')(field_list)) }}
 {% endmacro %}
 
 {%- macro default__generate_surrogate_key(field_list) -%}

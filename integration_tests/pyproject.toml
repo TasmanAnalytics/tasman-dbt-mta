@@ -8,10 +8,11 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 isort = "^5.12.0"
+sqlparse = "^0.5.0"
 
 [tool.poetry.group.dbt.dependencies]
-dbt-snowflake = "^1.6.0"
-dbt-bigquery = "^1.6.0"
+dbt-snowflake = "~1.5.4"
+dbt-bigquery = "~1.5.4"
 
 [tool.poetry.group.dev.dependencies]
 sqlfluff = "^2.3.0"

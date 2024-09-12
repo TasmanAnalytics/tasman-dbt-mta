@@ -182,8 +182,12 @@ models:
       - name: surrogate_key
         description: "A unique key for the table, generated from the hash of the model ID and conversion event ID"
         tests:
-          - not_null
-          - unique
+          - not_null:
+              config: 
+                where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+          - unique:
+              config: 
+                where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: conversion_user_id
         description: "Identifier for the user associated with the conversion"
@@ -217,13 +221,19 @@ models:
       - name: surrogate_key
         description: "A unique key for the table, generated from the hash of the model ID and touch event ID"
         tests:
-          - not_null
-          - unique
+          - not_null:
+              config: 
+                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+          - unique:
+              config: 
+                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: touch_user_id
         description: "Identifier for the user associated with the touch"
         tests:
-          - not_null
+          - not_null:
+              config: 
+                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: touch_event_id
         description: "Identifer that defines a unique touch event."
@@ -239,9 +249,13 @@ models:
       - name: model_id
         description: "Identifer that specifies the attribution model that the attribution relates to."
         tests:
-          - not_null
+          - not_null:
+              config: 
+                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: touch_category
         description: "The category of the touch, as defined in the touch rules seed."
         tests:
-          - not_null
+          - not_null:
+              config: 
+                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"

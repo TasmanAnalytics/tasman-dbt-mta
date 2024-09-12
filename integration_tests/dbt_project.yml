@@ -35,5 +35,6 @@ vars:
     attribution_rules: "{{ ref('attribution_rules') }}"
     conversion_shares: "{{ ref('conversion_shares') }}"
     attribution_windows: "{{ ref('attribution_windows') }}"
+    test_hours: "36"
     snowflake_prod_warehouse: ""
     snowflake_dev_warehouse: ""

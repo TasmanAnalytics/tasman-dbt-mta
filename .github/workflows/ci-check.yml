@@ -50,7 +50,7 @@ jobs:
       - name: Install python deps
         id: install-python-deps
         run: |
-          poetry install
+          poetry install --no-root
 
       - name: Install dbt deps
         id: install-dbt-deps

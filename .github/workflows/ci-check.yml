@@ -21,11 +21,19 @@ jobs:
       SNOWFLAKE_DATABASE_CI: DBT_PACKAGE_CI
       SNOWFLAKE_ROLE_CI: PACKAGE_CI_ROLE
       SNOWFLAKE_WAREHOUSE_CI: PACKAGE_CI_WH
-      SNOWFLAKE_SCHEMA_CI: DBT_CI_${{github.event.number}}_${{ github.actor }} # Creates a unique schema for each PR
     steps:
       - name: Checkout branch
         id: checkout-branch
         uses: actions/checkout@v3
+
+      - name: Set schema name
+        id: set-schema-name
+        run: |
+          if [ "${{ github.actor }}" = "dependabot[bot]" ]; then
+            echo "schema_name=dependabot" >> $GITHUB_OUTPUT
+          else
+            echo "schema_name=${{ github.actor }}" >> $GITHUB_OUTPUT
+          fi
 
       - name: Install Poetry
         id: install-poetry
@@ -42,7 +50,7 @@ jobs:
       - name: Install python deps
         id: install-python-deps
         run: |
-          poetry install
+          poetry install --no-root
 
       - name: Install dbt deps
         id: install-dbt-deps
@@ -51,10 +59,14 @@ jobs:
 
       - name: Check dbt compiles and CI Profiles work
         id: check-dbt-ci-profiles-work
+        env:
+          SNOWFLAKE_SCHEMA_CI: DBT_CI_${{github.event.number}}_${{ steps.set-schema-name.outputs.schema_name }}
         run: |
           poetry run dbt debug --target snowflake-ci
 
       - name: dbt build on Snowflake
         id: dbt-build-snowflake
+        env:
+          SNOWFLAKE_SCHEMA_CI: DBT_CI_${{github.event.number}}_${{ steps.set-schema-name.outputs.schema_name }}
         run: |
           poetry run dbt build --full-refresh --target snowflake-ci

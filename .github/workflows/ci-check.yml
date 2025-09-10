@@ -11,9 +11,6 @@ concurrency:
 jobs:
   ci-check-snowflake:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./integration_tests
     env:
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       SNOWFLAKE_USER_CI: ${{ secrets.SNOWFLAKE_CI_USER }}
@@ -45,28 +42,15 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
-          cache: 'poetry' # Auto cache based on poetry.lock
+          cache: poetry
 
       - name: Install python deps
         id: install-python-deps
         run: |
-          poetry install --no-root
+          poetry install --with dbt --no-root
 
-      - name: Install dbt deps
-        id: install-dbt-deps
-        run: |
-          poetry run dbt deps
-
-      - name: Check dbt compiles and CI Profiles work
-        id: check-dbt-ci-profiles-work
+      - name: Run integration tests
         env:
           SNOWFLAKE_SCHEMA_CI: DBT_CI_${{github.event.number}}_${{ steps.set-schema-name.outputs.schema_name }}
         run: |
-          poetry run dbt debug --target snowflake-ci
-
-      - name: dbt build on Snowflake
-        id: dbt-build-snowflake
-        env:
-          SNOWFLAKE_SCHEMA_CI: DBT_CI_${{github.event.number}}_${{ steps.set-schema-name.outputs.schema_name }}
-        run: |
-          poetry run dbt build --full-refresh --target snowflake-ci
+          poetry run ./run_test.sh

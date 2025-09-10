@@ -1,4 +1,4 @@
-.PHONY: dbt docs lint
+.PHONY: dbt docs lint integration_tests
 .DEFAULT_GOAL := help
 
 # Makes all arguments after the `lint` command do-nothing targets
@@ -17,6 +17,9 @@ poetry: ## Install poetry
 # dbt Development recipes
 dbt: poetry ## Start a dbt shell
 	export DBT_PROFILES_DIR=~/.dbt/ && export SHELL=/bin/zsh && poetry shell
+
+integration_tests: ## Run integration tests
+	./run_test.sh
 
 docs: poetry ## Compile the dbt project & start dbt docs
 	poetry run dbt docs generate --profiles-dir ~/.dbt/

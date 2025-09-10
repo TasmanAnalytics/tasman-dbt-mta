@@ -56,6 +56,25 @@ This package has been written and is maintained by [Tasman Analytics](https://ta
 
 If you find a bug, or for any questions please open an issue on GitHub.
 
+## Contributing
+
+### Integration tests
+
+Configure your credentials by making a copy of the `.env.example` file called `.env` and fill in the required values.
+
+If you're using `direnv`, run `direnv allow` to automatically load the environment variables; otherwise load them manually, for example:
+
+```shell
+set -a; source .env; set +a
+```
+
+Run the integration tests with:
+
+```shell
+make integration_tests
+```
+
+
 [tasman_website_dark_mode]: https://tasman.ai?utm_source=github&utm_medium=internal-referral&utm_campaign=tasman-dbt-mta#gh-dark-mode-only
 [tasman_website_light_mode]: https://tasman.ai?utm_source=github&utm_medium=internal-referral&utm_campaign=tasman-dbt-mta#gh-light-mode-only
 [tasman_contact]: https://tasman.ai/contact?utm_source=github&utm_medium=internal-referral&utm_campaign=tasman-dbt-mta

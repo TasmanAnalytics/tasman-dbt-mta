@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tasman_dbt_mta_integration_tests"
-version = "0.1.0"
+version = "1.1.0"
 description = "Integration tests for Tasman dbt MTA Engine"
 authors = ["Tasman Data Engineering"]
 readme = "README.md"

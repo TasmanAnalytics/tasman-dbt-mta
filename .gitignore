@@ -171,6 +171,7 @@ celerybeat.pid
 
 # Environments
 .env
+.envrc
 .venv
 env/
 venv/
@@ -226,4 +227,3 @@ target/
 dbt_packages/
 logs/
 .user.yml
-

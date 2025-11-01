@@ -1,18 +1,20 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/latest/dbt_project-latest.json
+---
+name: tasman_dbt_mta_integration_tests
+version: "1.0.0"
 
-name: 'tasman_dbt_mta_integration_tests'
-version: '1.0.0'
 config-version: 2
 
-profile: 'tasman_integration_tests'
+profile: tasman_integration_tests
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
 test-paths: ["tests"]
-seed-paths: ["data"]
+seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-target-path: "target" 
+target-path: "target"
 clean-targets: ["target", "dbt_packages"]
 
 

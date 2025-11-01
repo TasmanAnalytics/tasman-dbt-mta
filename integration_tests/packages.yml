@@ -1,2 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/latest/packages-latest.json
+---
 packages:
   - local: ../

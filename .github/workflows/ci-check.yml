@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+---
 name: CI
 
 on:
@@ -32,25 +34,15 @@ jobs:
             echo "schema_name=${{ github.actor }}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Install Poetry
-        id: install-poetry
-        run: |
-          pipx install poetry
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with: { enable-cache: true }
 
-      - name: setup-python
-        id: setup-python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-          cache: poetry
-
-      - name: Install python deps
-        id: install-python-deps
-        run: |
-          poetry install --with dbt --no-root
+      - name: Install dependencies
+        run: uv sync --no-default-groups --group dbt
 
       - name: Run integration tests
         env:
           SNOWFLAKE_SCHEMA_CI: DBT_CI_${{github.event.number}}_${{ steps.set-schema-name.outputs.schema_name }}
         run: |
-          poetry run ./run_test.sh
+          uv run ./run_test.sh

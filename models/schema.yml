@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/latest/dbt_yml_files-latest.json
+---
 version: 2
 
 models:
@@ -43,7 +45,7 @@ models:
         description: "The timestamp when the touch event happened."
         tests:
           - in_past
-      
+
       - name: touch_user_id
         description: "Identifier for the user associated with the touch"
 
@@ -183,48 +185,48 @@ models:
         description: "A unique key for the table, generated from the hash of the model ID and conversion event ID"
         tests:
           - not_null:
-              config: 
+              config:
                 where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
           - unique:
-              config: 
+              config:
                 where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: conversion_user_id
         description: "Identifier for the user associated with the conversion"
         tests:
           - not_null:
-              config: 
+              config:
                 where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: conversion_event_id
         description: "Identifer that defines a unique conversion event."
         tests:
           - not_null:
-              config: 
+              config:
                 where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: conversion_timestamp
         description: "The timestamp when the conversion event happened."
         tests:
           - not_null:
-              config: 
+              config:
                 where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
           - in_past:
-              config: 
+              config:
                 where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: model_id
         description: "Identifer that specifies the attribution model that the attribution relates to."
         tests:
           - not_null:
-              config: 
+              config:
                 where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: conversion_category
         description: "The category of conversion event, as defined in the conversion rules seed."
         tests:
           - not_null:
-              config: 
+              config:
                 where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
   - name: tasman_mta__filtered_touch_events
@@ -234,46 +236,46 @@ models:
         description: "A unique key for the table, generated from the hash of the model ID and touch event ID"
         tests:
           - not_null:
-              config: 
+              config:
                 where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
           - unique:
-              config: 
+              config:
                 where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: touch_user_id
         description: "Identifier for the user associated with the touch"
         tests:
           - not_null:
-              config: 
+              config:
                 where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: touch_event_id
         description: "Identifer that defines a unique touch event."
         tests:
           - not_null:
-              config: 
+              config:
                 where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: touch_timestamp
         description: "The timestamp when the touch event happened."
         tests:
           - not_null:
-              config: 
+              config:
                 where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
           - in_past:
-              config: 
+              config:
                 where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: model_id
         description: "Identifer that specifies the attribution model that the attribution relates to."
         tests:
           - not_null:
-              config: 
+              config:
                 where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
 
       - name: touch_category
         description: "The category of the touch, as defined in the touch rules seed."
         tests:
           - not_null:
-              config: 
+              config:
                 where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"

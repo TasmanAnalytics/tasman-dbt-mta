@@ -171,7 +171,7 @@ The Tasman MTA package generates several models. The primary output model is:
 - `conversion_event_id` - Links to `dmn_web_conversion_events.event_id`
 - `touch_event_id` - Links to `dmn_web_touch_events.event_id`
 - `model_id` - Attribution model identifier (e.g., 'last_session_touch_onsite_purchase')
-- `conversion_category` - 'purchase' or 'enquiry'
+- `conversion_category` - 'purchase' or 'booking', etc
 - `touch_category` - From touch_rules seed (e.g., 'all_channels')
 - `att_window` - Attribution window identifier (e.g., 'last_7_days')
 - `conversion_share` - Percentage of conversion credit (decimal, e.g., 1.0 = 100%)

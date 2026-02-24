@@ -18,7 +18,6 @@
   - [Scenario 2: Add a New Attribution Window](#scenario-2-add-a-new-attribution-window-eg-30-days)
   - [Scenario 3: Exclude Certain Channels](#scenario-3-exclude-certain-channels-from-attribution)
   - [Scenario 4: Create a Multi-Touch Model](#scenario-4-create-a-multi-touch-attribution-model-linear)
-  - [Scenario 5: Add a New Enquiry Event Type](#scenario-5-add-a-new-enquiry-event-type)
 - [Touches vs Sessions](#touches-vs-sessions)
 
 ---
@@ -197,7 +196,7 @@ These files contains rules that are used to filter conversions for specific attr
 ### Schema
 
 - **`model_id`** - Attribution model identifier
-- **`conversion_category`** - Category name ('purchase' or 'enquiry'). A text field that can be used to describe the category of conversions for the model. This provides a mechanism to add additional attribution specific categorisations to the conversions.
+- **`conversion_category`** - Category name ('purchase' or 'booking', etc). A text field that can be used to describe the category of conversions for the model. This provides a mechanism to add additional attribution specific categorisations to the conversions.
 - **`rule`** - Rule number. Each rule is evaluated with OR logic.
 - **`part`** - Part number within a rule. Each rule part is considered with AND logic.
 - **`attribute`** - Field to evaluate (e.g., 'conversion_type'). The field within the `conversions_model` that is being evaluated for the rule part.

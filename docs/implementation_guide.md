@@ -1,4 +1,16 @@
+# MTA Implementation Guide
+
 This package calculates which marketing touchpoints deserve credit for driving conversions, enabling sophisticated marketing attribution analysis beyond simple last-click models.
+
+**Table of Contents**
+- [What the MTA Engine Does](#what-the-mta-engine-does)
+- [Prerequisites](#prerequisites)
+  - [Identity Resolution](#identity-resolution)
+- [Architecture & Data Flow](#architecture--data-flow)
+  - [Input Models](#input-models)
+  - [MTA Engine Models](#mta-engine-models-from-package)
+  - [Output Models](#output-models)
+- [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -7,9 +19,19 @@ This package calculates which marketing touchpoints deserve credit for driving c
 The MTA engine:
 1. Takes **touch events** (page views with marketing attribution data)
 2. Takes **conversion events** (purchases and enquiries)
-3. Applies **configurable attribution rules** to determine which touches get credit
-4. Outputs **attributed conversions** showing the relationship between touches and conversions
+3. Applies **configurable attribution rules** to determine which touch events get credit
+4. Outputs **attributed conversions** showing the relationship between touch events and conversions
 
+
+---
+
+## Prerequisites
+
+### Identity Resolution
+
+**The MTA engine needs stable user identifiers to link touch events across sessions.**
+
+Therefore you should do identity stitching/resolution before `dmn_touch_events` and `dmn_conversion_events`. Without proper identity resolution, the engine cannot accurately attribute conversions to touch events that occurred in different sessions or devices.
 
 ---
 
@@ -21,12 +43,12 @@ The MTA engine:
 You will need a model which lists all your touch-events. Something like this: 
 
 **Example**: `dmn_web_touch_events`  
-**Purpose**: Contains marketing touchpoint events eligible for attribution (e.g., page views, ad clicks). 1 row per touch.  
-**Configuration**: Set via `touches_model` variable in `dbt_project.yml`
+**Purpose**: Contains marketing touch events eligible for attribution (e.g., page views, ad clicks). 1 row per touch event.  
+**Configuration**: Set via `touches_model` variable in `dbt_project.yml` ([see Configuration Guide](configuration.md#configuring-the-engine))
 
-##### Important Considerations for Touch Events
+> **Note:** The engine supports both individual touch events and session-level data. See [Touches vs Sessions](configuration.md#touches-vs-sessions) for guidance on which approach to use.
 
-**Attribution Data Priority**
+##### Attribution Data Priority
 
 When dealing with event data, it's common to have multiple sources of attribution information for a single event. By the time the event reaches the touch events model, you need to have consolidated this down to four standardized columns:
 - `touch_channel`
@@ -34,23 +56,27 @@ When dealing with event data, it's common to have multiple sources of attributio
 - `touch_medium`
 - `touch_campaign`
 
-Consider which data source gives the truest representation of how the user arrived. A typical priority waterfall might look like:
+**Priority Waterfall** (highest to lowest):
 
-1. **Ad Platform Data** (highest priority) - Direct from ad platforms via product links or click IDs (e.g., `gclid`)
-   - Most accurate for paid campaigns
-   - Example: Google Ads campaign data when GA4 is linked to Google Ads
+**1. Ad Platform Data** (highest priority)
+   - **Source**: Direct from ad platforms via product links or click IDs (e.g., `gclid`)
+   - **Use case**: Most accurate for paid campaigns
+   - **Example**: Google Ads campaign data when GA4 is linked to Google Ads
    
-2. **Cross-Channel Data** - Analytics platform's auto-classification (entrance events only)
-   - Good for organic and referral traffic
-   - Example: GA4's automatic source/medium classification
+**2. Cross-Channel Data**
+   - **Source**: Analytics platform's auto-classification (entrance events only)
+   - **Use case**: Good for organic and referral traffic
+   - **Example**: GA4's automatic source/medium classification
    
-3. **Event-Scope Parameters** - URL parameters captured at the event level
-   - Captures mid-session attribution changes
-   - Example: UTM parameters on specific page views
+**3. Event-Scope Parameters**
+   - **Source**: URL parameters captured at the event level
+   - **Use case**: Captures mid-session attribution changes
+   - **Example**: UTM parameters on specific page views
    
-4. **Session-Scope Parameters** (lowest priority) - Session-level UTM parameters (entrance events only)
-   - Fallback for manual campaign tracking
-   - Example: UTMs from the landing page
+**4. Session-Scope Parameters** (lowest priority)
+   - **Source**: Session-level UTM parameters (entrance events only)
+   - **Use case**: Fallback for manual campaign tracking
+   - **Example**: UTMs from the landing page
 
 **Example Priority Logic**:
 ```sql
@@ -66,7 +92,9 @@ case
 end as touch_source
 ```
 
-**What Counts as a Touch Event?**
+---
+
+##### What Counts as a Touch Event?
 
 While technically you could include all page views as touches, the MTA engine will attribute conversions based on your touch rules. Think carefully about what events you include in the touch events model—one of these events may ultimately be selected as the signal that led to a conversion.
 
@@ -106,7 +134,7 @@ You will also need a model which lists all your conversion-events. Something lik
 
 **Example**: `dmn_web_conversion_events`  
 **Purpose**: Contains conversion events that you want to attribute to marketing touches. 1 row per conversion.
-**Configuration**: Set via `conversions_model` variable in `dbt_project.yml`
+**Configuration**: Set via `conversions_model` variable in `dbt_project.yml` ([see Configuration Guide](configuration.md#configuring-the-engine))
 
 **Typical Filtering Criteria**:
 - Valid conversion event types
@@ -160,13 +188,6 @@ The Tasman MTA package generates several models. The primary output model is:
 - `tasman_mta__performance_history` - Attribution performance metrics
 
 
-
-### A note on Identity Resolution
-
-**The MTA engine needs stable user identifiers to link touches across sessions**
-Therefore you should do identity stitching/resolution before dmn_touch_events and dmn_conversion_events. 
-
-
 ---
 
 ### Output Models
@@ -183,21 +204,26 @@ You will need to define a model to pick up the output from the MTA engine (which
 
 ```sql
 with conversion_events as (
+    -- All conversion events (purchases, enquiries, etc.)
     select *
     from {{ ref('dmn_web_conversion_events') }}
 ),
 
 conversion_attributions as (
+    -- Attribution results from MTA engine
+    -- Filter to touches with credit OR unattributed conversions
     select *
     from {{ ref("tasman_mta__attributed_conversions") }}
     where conversion_share > 0 or touch_event_id is null
 ),
 
 touch_events as (
+    -- Full touch event details for enrichment
     select * from {{ ref("dmn_web_touch_events") }}
 ),
 
 sessions as (
+    -- Session data for fallback when no touch is attributed
     select * from {{ ref("dmn_web_sessions") }}
 ),
 
@@ -321,9 +347,9 @@ The key is consistency—choose a convention and apply it across all your attrib
 ### Issue: No Attributed Conversions
 
 **Possible Causes**:
-1. `touch_rules.csv` filtering out all touches
-2. `attribution_windows.csv` window too short
-3. `conversion_rules.csv` not matching any conversions
+1. `touch_rules.csv` filtering out all touches ([see Touch Rules](configuration.md#touch-rules))
+2. `attribution_windows.csv` window too short ([see Attribution Windows](configuration.md#attribution-windows))
+3. `conversion_rules.csv` not matching any conversions ([see Conversion Rules](configuration.md#conversion-rules))
 4. Upstream models not running
 
 **Debugging**:
@@ -355,6 +381,8 @@ GROUP BY 1, 2
 ```
 
 **Solution**: Filter downstream models to specific `model_id` and `att_window`, or deduplicate using `QUALIFY`.
+
+For more on configuring multiple models, see [Configuring the Models](configuration.md#configuring-the-models).
 
 ---
 

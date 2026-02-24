@@ -33,6 +33,36 @@ All attribution behavior is controlled via:
 1. **dbt variables** in `dbt_project.yml` (engine configuration)
 2. **CSV seed files** in `transformation/data/attribution/` (attribution rules)
 
+For implementation details, see the [Implementation Guide](implementation_guide.md).
+
+---
+
+# Quick Reference: Common Attribution Models
+
+This table shows how to configure the five most common attribution models. Each model requires configuration across all five seed files.
+
+| Model | Touch Rules | Conversion Rules | Attribution Rules | Conversion Shares | Window |
+|-------|-------------|------------------|-------------------|-------------------|--------|
+| **First Touch** | All channels (exclude Direct/Internal) | Purchase | `convert_seq_up = 1` | spec 1: `1.0` | 30 days |
+| **Last Touch** | All channels (exclude Direct/Internal) | Purchase | `convert_seq_down = 1` | spec 1: `1.0` | 30 days |
+| **Linear** | All channels (exclude Direct/Internal) | Purchase | `convert_seq_down >= 1` | spec 1: `1.0` | 30 days |
+| **U-Shaped** | All channels (exclude Direct/Internal) | Purchase | spec 1: first touch<br>spec 2: last touch<br>spec 3: middle touches | spec 1: `0.4`<br>spec 2: `0.4`<br>spec 3: `0.2` | 30 days |
+| **W-Shaped** | All channels (exclude Direct/Internal) | Lead + Purchase | spec 1: first touch<br>spec 2: last lead touch<br>spec 3: last purchase touch<br>spec 4: middle touches | spec 1: `0.3`<br>spec 2: `0.3`<br>spec 3: `0.3`<br>spec 4: `0.1` | 30 days |
+
+See detailed configuration examples below for each seed file.
+
+---
+
+# Touches vs Sessions
+
+The term used throughout this package to describe the actions taken by a given user is a **touch**. However, many organisations prefer to think about attribution from a session perspective. The engine supports both and isn't opinionated in its approach.
+
+> **Important:** If working with individual touch events, it's important to filter out touches that come from an internal referrer - particularly when using a last-touch model - otherwise the last touch will almost always be an internal touch and provide little insight.
+
+> **Important:** If working with sessions, it's important that sessionisation is completed upstream of the engine, and that the model contains 1 row per session.
+
+For more on preparing touch events, see the [Touch Events Model section](implementation_guide.md#1-touch-events-model) in the Implementation Guide.
+
 ---
 
 # Configuring the Engine
@@ -83,6 +113,7 @@ vars:
 - **`snowflake_prod_warehouse`:** **(Snowflake connections only)** This is the snowflake warehouse that should be used for when the target = 'prod'. An empty string will use the profile default warehouse.
 - **`snowflake_dev_warehouse`:** **(Snowflake connections only)** This is the snowflake warehouse that should be used for when the target = 'dev'. An empty string will use the profile default warehouse.
 
+---
 
 # Configuring the Models
 
@@ -105,7 +136,8 @@ Templated seed files (csvs) containing the required schema are included in the [
 **File**: `transformation/data/attribution/touch_rules.csv`
 
 These files contains rules that are used to filter touches for specific attribution models. 
-> N.B. There needs to be at least 1 rule per model for that model to receive any touches (otherwise they are all filtered out).
+
+> **Important:** There needs to be at least 1 rule per model for that model to receive any touches (otherwise they are all filtered out).
 
 ### Schema
 
@@ -159,7 +191,8 @@ w_shaped_30_days,all_channels,1,1,touch_channel,string,<>,''
 **File**: `transformation/data/attribution/conversion_rules.csv`
 
 These files contains rules that are used to filter conversions for specific attribution models. 
-> N.B. There needs to be at least 1 rule per model for that model to receive any conversions (otherwise they are all filtered out).
+
+> **Important:** There needs to be at least 1 rule per model for that model to receive any conversions (otherwise they are all filtered out).
 
 ### Schema
 
@@ -213,7 +246,8 @@ The attribution rules seed defines how touches are attributed to conversions for
 
 - **`model_id`** - Attribution model identifier
 - **`spec`** - Specification number (allows multiple attribution specs per model). Short for specification, each spec defines the rule set of a particular attribution model, and can be assigned a conversion share value. In the example above, it can be seen that 'single touch' models such as first touch and last touch only have 1 spec, whereas more complex multi-touch or multi-conversion models will have more than one spec.
-  > N.B. where a spec matches more than one touch, the conversion share is split equally between the touches.
+  
+  > **Note:** Where a spec matches more than one touch, the conversion share is split equally between the touches.
 - **`rule`** - Rule number. Each rule is evaluated with OR logic.
 - **`part`** - Part number within a rule. Each rule part is considered with AND logic.
 - **`attribute`** - Field to evaluate (e.g., 'convert_seq_down'). The derived property that is being evaluated for the rule part. If the attribute doesn't match any fields in the model then logically it will always output **false**. Properties available are:
@@ -446,6 +480,8 @@ last_session_touch_onsite_purchase,all_channels,1,4,touch_channel,string,<>,Paid
 2. Run `dbt seed --select touch_rules`
 3. Run `dbt run --select tasman_mta__attributed_conversions+`
 
+See [Troubleshooting](implementation_guide.md#troubleshooting) if you encounter issues.
+
 ---
 
 ## Scenario 4: Create a Multi-Touch Attribution Model (Linear)
@@ -470,16 +506,8 @@ linear_model,1,1
 3. Run `dbt seed --select attribution_rules conversion_shares touch_rules conversion_rules`
 4. Run `dbt run --select tasman_mta__attributed_conversions+`
 
+See [Troubleshooting](implementation_guide.md#troubleshooting) if you encounter issues.
+
 **Note**: For true linear attribution, the MTA engine will automatically split credit equally across all touches. The `share = 1` means each touch gets 100% of its allocated portion.
 
 ---
-
-
-
-# Touches vs Sessions
-
-The term used throughout this package to describe the actions taken by a given user is a touch. However, many organisations prefer to think about attribution from a session perspective. The engine supports both and isn't opinionated in its approach.
-
-If working with individual touches, its important to filter out touches that come from an internal referrer - particularly when using a last-touch model - otherwise the last touch will almost always be an internal touch and provide little insight. 
-
-If working with sessions, its important that sessionisation is completed upstream of the engine, and that the model contains 1 row per session.

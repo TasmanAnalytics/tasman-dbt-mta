@@ -3,7 +3,7 @@
     {% if where %}
         {% if '__test_hours_ago__' in where %}
             {% set hours = var('test_hours') %}
-            {% set n_hours_ago = "cast(" ~ dbt.dateadd('hour', -hours, dbt.current_timestamp()) ~ " as timestamp)" %}
+            {% set n_hours_ago = "cast(" ~ dbt.dateadd('hour', hours * -1, dbt.current_timestamp()) ~ " as timestamp)" %}
             {% set where = where | replace('__test_hours_ago__', n_hours_ago) %}
         {% endif %}
         {%- set filtered -%}

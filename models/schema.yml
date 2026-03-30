@@ -186,48 +186,48 @@ models:
         tests:
           - not_null:
               config:
-                where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}conversion_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
           - unique:
               config:
-                where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}conversion_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
 
       - name: conversion_user_id
         description: "Identifier for the user associated with the conversion"
         tests:
           - not_null:
               config:
-                where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}conversion_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
 
       - name: conversion_event_id
         description: "Identifer that defines a unique conversion event."
         tests:
           - not_null:
               config:
-                where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}conversion_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
 
       - name: conversion_timestamp
         description: "The timestamp when the conversion event happened."
         tests:
           - not_null:
               config:
-                where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}conversion_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
           - in_past:
               config:
-                where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}conversion_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
 
       - name: model_id
         description: "Identifer that specifies the attribution model that the attribution relates to."
         tests:
           - not_null:
               config:
-                where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}conversion_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
 
       - name: conversion_category
         description: "The category of conversion event, as defined in the conversion rules seed."
         tests:
           - not_null:
               config:
-                where: "conversion_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}conversion_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
 
   - name: tasman_mta__filtered_touch_events
     description: "This model applies the touch rules seed to the model defined in the 'touches_model' variable with the project file."
@@ -237,45 +237,45 @@ models:
         tests:
           - not_null:
               config:
-                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}touch_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
           - unique:
               config:
-                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}touch_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
 
       - name: touch_user_id
         description: "Identifier for the user associated with the touch"
         tests:
           - not_null:
               config:
-                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}touch_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
 
       - name: touch_event_id
         description: "Identifer that defines a unique touch event."
         tests:
           - not_null:
               config:
-                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}touch_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
 
       - name: touch_timestamp
         description: "The timestamp when the touch event happened."
         tests:
           - not_null:
               config:
-                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}touch_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
           - in_past:
               config:
-                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}touch_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
 
       - name: model_id
         description: "Identifer that specifies the attribution model that the attribution relates to."
         tests:
           - not_null:
               config:
-                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}touch_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"
 
       - name: touch_category
         description: "The category of the touch, as defined in the touch rules seed."
         tests:
           - not_null:
               config:
-                where: "touch_timestamp >= DATEADD(HOUR, -{{ var('test_hours') }}, current_timestamp())"
+                where: "{% if flags.FULL_REFRESH %}1=1{% else %}touch_timestamp >= current_timestamp() - interval '{{ var('test_hours') }}' hour{% endif %}"

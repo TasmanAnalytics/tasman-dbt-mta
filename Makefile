@@ -19,8 +19,13 @@ setup: ## Install uv
 dbt: ## Start a dbt shell
 	export DBT_PROFILES_DIR=~/.dbt/ && export SHELL=/bin/zsh && . .venv/bin/activate && exec bash
 
+bigquery-login: ## Login to GCP with gcloud and set the project
+	gcloud config set project $(GCP_PROJECT_ID)
+	gcloud auth login --enable-gdrive-access --update-adc
+
 integration_tests: ## Run integration tests
-	uv run ./run_test.sh
+	uv run ./run_test.sh snowflake-ci
+	uv run ./run_test.sh bigquery-ci
 
 docs: ## Compile the dbt project & start dbt docs
 	uv run dbt docs generate --profiles-dir ~/.dbt/

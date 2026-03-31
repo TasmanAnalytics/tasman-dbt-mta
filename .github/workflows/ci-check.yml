@@ -11,18 +11,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ci-check-snowflake:
+  ci-check:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [snowflake-ci, bigquery-ci]
     env:
+      # Snowflake
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
       SNOWFLAKE_USER_CI: ${{ secrets.SNOWFLAKE_CI_USER }}
       SNOWFLAKE_PASSWORD_CI: ${{ secrets.SNOWFLAKE_CI_USER_PASSWORD }}
       SNOWFLAKE_DATABASE_CI: DBT_PACKAGE_CI
       SNOWFLAKE_ROLE_CI: PACKAGE_CI_ROLE
       SNOWFLAKE_WAREHOUSE_CI: PACKAGE_CI_WH
+      # BigQuery
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
     steps:
       - name: Checkout branch
-        id: checkout-branch
         uses: actions/checkout@v3
 
       - name: Set schema name
@@ -34,6 +40,12 @@ jobs:
             echo "schema_name=${{ github.actor }}" >> $GITHUB_OUTPUT
           fi
 
+      - name: Authenticate to Google Cloud
+        if: matrix.target == 'bigquery-ci'
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with: { enable-cache: true }
@@ -43,6 +55,7 @@ jobs:
 
       - name: Run integration tests
         env:
-          SNOWFLAKE_SCHEMA_CI: DBT_CI_${{github.event.number}}_${{ steps.set-schema-name.outputs.schema_name }}
+          SNOWFLAKE_SCHEMA_CI: DBT_CI_${{ github.event.number }}_${{ steps.set-schema-name.outputs.schema_name }}
+          BIGQUERY_DATASET: dbt_ci_${{ github.event.number }}_${{ steps.set-schema-name.outputs.schema_name }}
         run: |
-          uv run ./run_test.sh
+          uv run ./run_test.sh ${{ matrix.target }}

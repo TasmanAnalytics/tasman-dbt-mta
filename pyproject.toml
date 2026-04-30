@@ -6,7 +6,7 @@ build-backend = "uv_build"
 
 [project]
 name = "tasman_dbt_mta_integration_tests"
-version = "1.1.0"
+version = "1.1.2"
 description = "Integration tests for Tasman dbt MTA Engine"
 authors = [
     {name = "Tasman Analytics"},

@@ -7,7 +7,7 @@ models:
     description: "This model contains both attributed and unattributed conversion events, along with the metadata describing the attribution. There is at least 1 row per conversion per model."
     columns:
       - name: surrogate_key
-        description: "A unique key for the table, generated from the hash of the model ID, touch event ID and conversion event ID"
+        description: "A unique key for the table, generated from the hash of the model ID, touch event ID, conversion event ID, and attribution spec"
         tests:
           - not_null
           - unique
@@ -93,7 +93,7 @@ models:
     description: "This model contains all touches that have been successfully attributed to a conversion. There is at least 1 row per conversion per model"
     columns:
       - name: surrogate_key
-        description: "A unique key for the table, generated from the hash of the model ID and touch event ID"
+        description: "A unique key for the table, generated from the hash of the model ID, touch event ID, and attribution spec"
         tests:
           - not_null
           - unique
@@ -233,7 +233,7 @@ models:
     description: "This model applies the touch rules seed to the model defined in the 'touches_model' variable with the project file."
     columns:
       - name: surrogate_key
-        description: "A unique key for the table, generated from the hash of the model ID and touch event ID"
+        description: "A unique key for the table, generated from the hash of the model ID, touch event ID, and attribution spec"
         tests:
           - not_null:
               config:

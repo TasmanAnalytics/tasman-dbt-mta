@@ -311,7 +311,8 @@ attributed_events as (
     select
         {{ generate_surrogate_key([
             'touch_events.model_id',
-            'touch_events.touch_event_id'
+            'touch_events.touch_event_id',
+            'share_attribution.spec'
             ]) }} as surrogate_key,
         touch_events.*,
         share_attribution.spec,

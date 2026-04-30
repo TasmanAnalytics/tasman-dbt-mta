@@ -31,15 +31,6 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v3
 
-      - name: Set schema name
-        id: set-schema-name
-        run: |
-          if [ "${{ github.actor }}" = "dependabot[bot]" ]; then
-            echo "schema_name=dependabot" >> $GITHUB_OUTPUT
-          else
-            echo "schema_name=${{ github.actor }}" >> $GITHUB_OUTPUT
-          fi
-
       - name: Authenticate to Google Cloud
         if: matrix.target == 'bigquery-ci'
         uses: google-github-actions/auth@v2
@@ -55,7 +46,7 @@ jobs:
 
       - name: Run integration tests
         env:
-          SNOWFLAKE_SCHEMA_CI: DBT_CI_${{ github.event.number }}_${{ steps.set-schema-name.outputs.schema_name }}
-          BIGQUERY_DATASET: dbt_ci_${{ github.event.number }}_${{ steps.set-schema-name.outputs.schema_name }}
+          SNOWFLAKE_SCHEMA_CI: DBT_CI_${{ github.event.number }}
+          BIGQUERY_DATASET: dbt_ci_${{ github.event.number }}
         run: |
           uv run ./run_test.sh ${{ matrix.target }}

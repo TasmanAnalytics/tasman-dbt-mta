@@ -23,7 +23,8 @@ joined_conversion_events as (
             'attributed_touches.model_id',
             'conversion_events.model_id',
             'attributed_touches.touch_event_id',
-            'conversion_events.conversion_event_id'
+            'conversion_events.conversion_event_id',
+            'attributed_touches.spec'
             ]) }} as surrogate_key,
         conversion_events.conversion_user_id,
         conversion_events.conversion_event_id,

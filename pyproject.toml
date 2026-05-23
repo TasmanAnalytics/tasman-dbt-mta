@@ -21,8 +21,8 @@ dbt = [
 ]
 dev = [
     "pre-commit>=4.6.0",
-    "sqlfluff>=2.3.0,<3",
-    "sqlfluff-templater-dbt>=2.3.0,<3",
+    "sqlfluff>=4.0.0",
+    "sqlfluff-templater-dbt>=4.0.0",
 ]
 
 [tool.uv]

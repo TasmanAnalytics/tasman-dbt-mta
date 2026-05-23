@@ -1,8 +1,8 @@
-{{ 
+{{
     config(
         materialized='table',
         snowflake_warehouse=get_warehouse()
-    ) 
+    )
 }}
 
 with
@@ -97,7 +97,7 @@ conversion_intervals as (
     inner join
         attribution_windows
         on matched_touches.model_id = attribution_windows.model_id
-    
+
 ),
 
 windowed_touches as (
@@ -144,7 +144,7 @@ touch_events as (
             when conversion_category is not null
             then rank() over (partition by conversion_event_id, model_id order by touch_timestamp desc)
         end as convert_seq_down
-        
+
 
     from
         windowed_touches

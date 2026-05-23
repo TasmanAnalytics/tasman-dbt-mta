@@ -20,6 +20,7 @@ dbt = [
     "dbt-bigquery>=1.5.0,<1.6.0",
 ]
 dev = [
+    "pre-commit>=4.6.0",
     "sqlfluff>=2.3.0,<3",
     "sqlfluff-templater-dbt>=2.3.0,<3",
 ]

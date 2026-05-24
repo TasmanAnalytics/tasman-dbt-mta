@@ -17,28 +17,59 @@
 
 ## What is Multi-Touch Attribution? 🤨
 
-Multi-touch attribution is a method of marketing measurement that accounts for all the touchpoints on the customer journey and designates a certain amount of credit to each channel. This enables marketers to analyse the value that each touchpoint has on driving a conversion.
+Multi-touch attribution is a method of marketing measurement that accounts for all the touches on the customer journey and designates a certain amount of credit to each channel. This enables marketers to analyse the value that each touch has on driving a conversion.
 
 The core functionality of an attribution engine is its ability to match touches to conversions based on a series of rules, known as 'attribution models'.
 
 Multi-touch attribution can be cross-device, however with the increased privacy constraints introduced by Apple in iOS 14.5 and more generally across the industry, deterministic methods of attribution such as those in this engine are generally ineffective for mobile. For mobile attribution, we recommend checking Mobile Measurement Partners (MMPs) with support for Apple's SKAdNetwork such as [Appsflyer](https://www.appsflyer.com/) or [Adjust](https://www.adjust.com/).
 
 >Examples of attribution models that can be configured with this engine include:
->- Last touch - 100% conversion credit is applied to the touch point immediately before the conversion event
->- First touch - 100% conversion credit is applied to the earliest occuring touch point
+>- Last touch - 100% conversion credit is applied to the touch immediately before the conversion event
+>- First touch - 100% conversion credit is applied to the earliest occurring touch
 >- U-shaped - 40% conversion credit is given to both first and last touches, with the remaining 20% split across all others
 
 🧠 For more information, [Segment has written an article](https://segment.com/academy/advanced-analytics/an-introduction-to-multi-touch-attribution/) introducing the topic and the most common models.
 
+---
+
+## Documentation 📚
+
+- **[Configuration Guide](docs/configuration.md)** - Complete reference for configuring attribution models, rules, and windows
+- **[Implementation Guide](docs/implementation_guide.md)** - Step-by-step guide for integrating the MTA engine into your dbt project
+- **[Enhancement Roadmap](docs/todo_list.md)** - Known limitations and planned improvements
+
+---
+
+## Quick Start 🚀
+
+**1. Prepare Your Input Models**
+   - Create a touch events model (e.g., `dmn_web_touch_events`) with marketing attribution data
+   - Create a conversion events model (e.g., `dmn_web_conversion_events`) with purchase/enquiry events
+   - Ensure identity resolution is complete upstream
+
+**2. Configure the Engine**
+   - Set variables in `dbt_project.yml` to point to your input models
+   - Configure attribution rules via CSV seed files (touch_rules, conversion_rules, attribution_rules, conversion_shares, attribution_windows)
+
+**3. Run & Enrich**
+   - Run the MTA package to generate `tasman_mta__attributed_conversions`
+   - Create an output model that enriches attribution results with full event details
+
+See the [Implementation Guide](docs/implementation_guide.md) for detailed instructions.
+
+---
+
 ## Configuring the Engine ⚙️
 
-Instructions on how to configure the MTA Engine can be found [here](docs/configuration.md).
+Detailed configuration instructions can be found in the [Configuration Guide](docs/configuration.md).
 
 ## Engine Outputs 🔥
 
 The engine has two primary output models, attributed touches and attributed conversions.   
-- [**`attributed_touches`**](models/tasman_mta__attributed_touches.sql) contains all filtered touches (based on the touch rules) across all attribution models that have been attributed to a conversion. Where touches have been attributed, there will be a `conversion_event_id` for that `touch_event_id`, as well as a conversion share value if appropriate.
-- [**`attributed_conversions`**](models/tasman_mta__attributed_conversions.sql) is this inverse of the attributed touches and contains all filtered conversions (based on the conversion rules) across all attribution models, whether or not they have attributed to a touch. Each `conversion_event_id` may appear once all multiple times depending on the number of attributed touches. Where `touch_event_id` is null, this indicates that the conversion is unattributed. This is the model that should be used in downstream models to analyse attribution performance.
+- [**`attributed_touches`**](models/tasman_mta__attributed_touches.sql) contains all filtered touch events (based on the touch rules) across all attribution models that have been attributed to a conversion. Where touch events have been attributed, there will be a `conversion_event_id` for that `touch_event_id`, as well as a conversion share value if appropriate.
+- [**`attributed_conversions`**](models/tasman_mta__attributed_conversions.sql) is the inverse of the attributed touches and contains all filtered conversions (based on the conversion rules) across all attribution models, whether or not they have been attributed to a touch. Each `conversion_event_id` may appear once or multiple times depending on the number of attributed touch events. Where `touch_event_id` is null, this indicates that the conversion is unattributed. This is the model that should be used in downstream models to analyse attribution performance.
+
+See the [Implementation Guide](docs/implementation_guide.md) for how to use these models in your project.
 
 ## Performance Tracking 🚀
 

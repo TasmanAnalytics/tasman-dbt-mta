@@ -6,7 +6,9 @@ max_line_length = 500
 
 [sqlfluff:templater:dbt]
 project_dir = ./
+profiles_dir = ./
 profile = tasman_integration_tests
+target = snowflake-ci
 
 [sqlfluff:templater:jinja]
 apply_dbt_builtins = True

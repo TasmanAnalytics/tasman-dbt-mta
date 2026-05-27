@@ -3,7 +3,7 @@
         config(
             materialized='incremental',
             snowflake_warehouse=get_warehouse()
-            ) 
+            )
     }}
 {% else %}
     {{
@@ -20,7 +20,7 @@ conversion_events as (
     select * from {{ var('conversions_model') }}
     {% if is_incremental() %}
     -- this filter will only be applied on an incremental run
-    where 
+    where
         cast({{var('conversions_timestamp_field')}} as timestamp) > (select max(conversion_timestamp) from {{ this }})
     {% endif %}
 ),
@@ -54,10 +54,10 @@ raw_event_attributes as (
             when conversion_attributes.attribute = '{{ attribute[0] }}' then cast({{ attribute[0] }} as string)
         {% endfor %}
         end as value
-    
+
     from
         conversion_events,  conversion_attributes
-    
+
 ),
 
 event_attributes as (
@@ -67,7 +67,7 @@ event_attributes as (
         raw_event_attributes
     where
         value is not null
-        
+
 ),
 
 conversion_rules_bit as ( -- maps rule parts to their attribute types and adds a bit used for validating that all parts of any rule are matched
@@ -77,7 +77,7 @@ conversion_rules_bit as ( -- maps rule parts to their attribute types and adds a
 
     from
         conversion_rules
-        
+
 ),
 
 conversion_rules_compiled as ( -- converts the value of the rule part predicate to the appropriate native type, for better performance

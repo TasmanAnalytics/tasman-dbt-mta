@@ -47,7 +47,7 @@ joined_conversion_events as (
 
     from
         conversion_events
-    
+
     left join
         attributed_touches
         on conversion_events.conversion_event_id = attributed_touches.conversion_event_id

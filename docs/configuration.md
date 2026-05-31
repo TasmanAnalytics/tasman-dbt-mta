@@ -99,16 +99,16 @@ vars:
   - Touches must occur in the past, and there are column tests throughout the package to validate this.  
 - **`touches_event_id_field`:** Field within the `touches_model` that contains a unique indentifier for each touch point  
 - **`touches_user_id_field`:** Field within the `touches_model` that contains the user identifier
-- **`conversions_model`:** Reference to the model containing conversion data points  
+- **`conversions_model`:** Reference to the model containing conversion data points
 - **`conversions_timestamp_field`:** Field within the `conversions_model` that contains timestamps for each conversion.
-  - Conversions must occur in the past, and there are column tests throughout the package to validate this.  
-- **`conversions_event_id_field`:** Field within the `conversions_model` that contains a unique indentifier for each conversion  
-- **`conversions_user_id_field`:** Field within the `conversions_model` that contains the user identifier 
-- **`conversion_rules`:** A seed file containing rules that can be used to filter specific conversions for each attribution model  
-- **`touch_rules`:** A seed file containing rules that can be used to filter specific touches for each attribution model  
-- **`attribution_rules`:** A seed file containing rules that are used to determine how touches are attributed to conversions (specs) for each attribution model  
-- **`conversion_shares`:** A seed file that maps to each attribution spec to determine the credit awarded to touches meeting each rule for each attribution model  
-- **`attribution_windows`:** A seed file that determines the maximum time between a touch and its conversion for each attribution model  
+  - Conversions must occur in the past, and there are column tests throughout the package to validate this.
+- **`conversions_event_id_field`:** Field within the `conversions_model` that contains a unique indentifier for each conversion
+- **`conversions_user_id_field`:** Field within the `conversions_model` that contains the user identifier
+- **`conversion_rules`:** A seed file containing rules that can be used to filter specific conversions for each attribution model
+- **`touch_rules`:** A seed file containing rules that can be used to filter specific touches for each attribution model
+- **`attribution_rules`:** A seed file containing rules that are used to determine how touches are attributed to conversions (specs) for each attribution model
+- **`conversion_shares`:** A seed file that maps to each attribution spec to determine the credit awarded to touches meeting each rule for each attribution model
+- **`attribution_windows`:** A seed file that determines the maximum time between a touch and its conversion for each attribution model
 - **`snowflake_prod_warehouse`:** **(Snowflake connections only)** This is the snowflake warehouse that should be used for when the target = 'prod'. An empty string will use the profile default warehouse.
 - **`snowflake_dev_warehouse`:** **(Snowflake connections only)** This is the snowflake warehouse that should be used for when the target = 'dev'. An empty string will use the profile default warehouse.
 
@@ -231,7 +231,15 @@ w_shaped_30_days,lead,1,1,conversion_type,string,=,lead
 w_shaped_30_days,purchase,1,1,conversion_type,string,=,purchase
 ```
 
----
+**Schema:**
+- **`model_id`:** The identifier for the attribution model that the rule corresponds to.
+- **`touch_category` / `conversion_category`:** A text field that can be used to describe the category of touches or conversions for the model. This provides a mechanism to add additional attribution specific categorisations to the touches and conversions.
+- **`rule`:** A 1-indexed integer defining the rule number for that touch category. Each rule is evaluated with OR logic, so if a category has 2 rules, the logic is rule 1 OR rule 2 has to be met for the touch to be assigned that category.
+- **`part`:** A 1-indexed integer defining parts of a rule. Each rule part is considered with AND logic, so if a rule has 2 parts, the logic is part 1 AND part 2 has to be met for the touch to be evaluated **true** against that rule.
+- **`attribute`:** The field within the `touches_model` or `conversions_model` that is being evaluated for the rule part. If the attribute doesn't match any fields in the model then no rows will be matched.
+- **`type`:** The data type of the attribute field within the `touches_model` or `conversions_model`. This is important to enable correct casting of the value evaluated against the attribute.
+- **`relation`:** The SQL boolean logic operator used to evalute the attribute and value.
+- **`value`:** The value evaluted for the rule part. Empty strings can be a value but required empty quotes as in the example above.
 
 ## Attribution Rules
 
@@ -309,7 +317,17 @@ w_shaped_30_days,4,2,1,convert_seq_down,>,1
 w_shaped_30_days,4,2,2,conversion_category,=,purchase
 ```
 
----
+- **`rule`:** A 1-indexed integer defining the rule number for that spec. Each rule is evaluated with OR logic, so if a category has 2 rules, the logic is rule 1 OR rule 2 has to be met for the touch to be assigned that category.
+- **`part`:** A 1-indexed integer defining parts of a rule. Each rule part is considered with AND logic, so if a rule has 2 parts, the logic is part 1 AND part 2 has to be met for the touch to be evaluated **true** against that rule.
+- **`attribute`**: The derived property that is being evaluated for the rule part. If the attribute doesn't match any fields in the model then logically is will always output **false**.  Properties available are:
+  - `touch_category`: The category of the touch as per the touch rules
+  - `conversion_category`: The category of the conversion as per the conversion rules
+  - `convert_touch_count`: The total number of attributed touches.
+  - `convert_seq_up`: The consecutive touch number based on the timestamp ascending.
+  - `convert_seq_down`: The consecutive touch number based on the timestamp descending.
+  - `interval_pre`: Time in seconds between the touch and the touch preceding.
+  - `interval_post`: Time in seconds between the touch and the touch following.
+  - `interval_convert`: Time in seconds between the touch and the attributed conversion.
 
 ## Conversion Shares
 
@@ -355,22 +373,18 @@ w_shaped_30_days,2,0.3
 w_shaped_30_days,3,0.3
 w_shaped_30_days,4,0.1
 ```
+**Schema:**
+- **`model_id`:** The identifier for the attribution model that the rule corresponds to.
+- **`spec`:** The spec within the attribution rules seed that the share is to be applied to.
+- **`share`:** The decimal percentage share that is granted to touches matching that spec. This share is split equally between all matching touches.
 
-**Multi-Touch Example** (Position-Based 40/20/40):
-```csv
-model_id,spec,share
-position_based,1,0.4  # First touch
-position_based,2,0.2  # Middle touches (split equally)
-position_based,3,0.4  # Last touch
-```
-
-> **Example U-Shaped model**  
+> Example U-Shaped model
 > 6 touches happen before conversion, the shares are split as follows:
 > - Spec 1: First touch (Touch 1) = 40% share
-> - Spec 2: Last Touch (Touch 6) = a 40% share 
-> - Spec 3: All other touches (Touches 2,3,4,5) split a 20% share = 5% each
+> - Spec 2: Last Touch (Touch 6) = a 40% share
+> - Spec 3: All  other touches (Touches 2,3,4,5) split a 20% share = 5% each
 
-> **Example W-Shaped model**  
+> Example W-Shaped model
 > 3 touches happen before lead conversion, 4 touches happen inbetween lead conversion and purchase conversion. The shares are split as follows:
 > - Spec 1: First touch (Touch 1) = 30% share
 > - Spec 2: Last touch before lead (Touch 3) = 30%
@@ -423,6 +437,10 @@ u_shaped_purchase_all_time,all time,0
 
 w_shaped_30_days,30 day,2629746
 ```
+**Schema:**
+- **`model_id`:** The identifier for the attribution model that the rule corresponds to.
+- **`att_window`:** A string field used to describe the attribution window as plain text. This is passed as metadata in the output table as additional context.
+- **`time_seconds`:** The maximum time in seconds allowed between a touch and conversion.
 
 
 

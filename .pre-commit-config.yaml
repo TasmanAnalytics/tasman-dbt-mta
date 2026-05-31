@@ -1,0 +1,90 @@
+# yaml-language-server: $schema=https://json.schemastore.org/pre-commit-config.json
+---
+default_install_hook_types: ["pre-commit", "pre-push"]
+default_stages: ["pre-commit"]
+
+repos:
+  - repo: meta
+    hooks:
+      - id: identity
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: no-commit-to-branch
+        name: Don't allow commits to the main branch
+        args: ["--branch", "main"]
+      - id: trailing-whitespace
+        name: Remove trailing whitespace
+      - id: end-of-file-fixer
+        name: Ensure files end with a newline character
+      - id: mixed-line-ending
+        name: Align mixed line ending
+      - id: check-added-large-files
+        name: Check for large files
+      - id: check-json
+        name: Check JSON files are valid and parseable
+      - id: check-toml
+        name: Check TOML files are valid and parseable
+      - id: check-yaml
+        name: Check YAML files are valid and parseable
+      - id: check-case-conflict
+        name: Check for case conflicts in filenames
+      - id: check-merge-conflict
+        name: Check for merge conflict markers
+      - id: detect-private-key
+        name: Detect private keys
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.11.14
+    hooks:
+      - id: uv-lock
+        name: Check that the lock file is up-to-date
+
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.37.2
+    hooks:
+      - id: check-github-workflows
+      - id: check-compose-spec
+
+  - repo: local
+    hooks:
+      - <<: &json-schema-hook
+          entry: check-jsonschema
+          pass_filenames: true
+          language: python
+          additional_dependencies: ["check-jsonschema==0.37.2"]
+          # These call remote URLs, so run on pre-push to avoid slowing down commits
+          stages: ["pre-push"]
+        id: check-pyproject-schema
+        name: Validate pyproject.toml schema
+        files: pyproject.toml
+        args: ["--schemafile", "https://json.schemastore.org/pyproject.json"]
+
+      # The _actual_ configuration of dbt YAML files and the configuration
+      # defined in these JSON schema files is sometimes misaligned (generally
+      # where feature changes have been introduced in dbt but not reflected in
+      # the schema files). If you experience this in a client repo, then please
+      # remove/comment out the following dbt schema hooks.
+
+      # dbt YAML files
+      - <<: *json-schema-hook
+        id: check-dbt-project-schema
+        name: Validate dbt_project.yml schema
+        files: dbt_project.yml
+        args: ["--schemafile", "https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/latest/dbt_project-latest.json"]
+      - <<: *json-schema-hook
+        id: check-packages-schema
+        name: Validate packages.yml schema
+        files: packages.yml
+        args: ["--schemafile", "https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/latest/packages-latest.json"]
+      - <<: *json-schema-hook
+        id: check-selectors-schema
+        name: Validate selectors.yml schema
+        files: selectors.yml
+        args: ["--schemafile", "https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/latest/selectors-latest.json"]
+      - <<: *json-schema-hook
+        id: check-dbt-yaml-files-schemas
+        name: Validate various dbt YAML file schemas
+        files: ^(macros|models|analysis|snapshots)/.*\.yml$
+        args: ["--schemafile", "https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/latest/dbt_yml_files-latest.json"]

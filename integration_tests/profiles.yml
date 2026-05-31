@@ -11,3 +11,10 @@ tasman_integration_tests:
       warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE_CI') }}"
       threads: 12
       type: snowflake
+    bigquery-ci:
+      type: bigquery
+      method: oauth
+      project: "{{ env_var('GCP_PROJECT_ID') }}"
+      dataset: "{{ env_var('BIGQUERY_DATASET') }}"
+      location: "{{ env_var('BIGQUERY_LOCATION', 'EU') }}"
+      threads: 4

@@ -10,8 +10,8 @@ touch_events as (
     select * from {{ var('touches_model') }}
     {% if is_incremental() %}
     -- this filter will only be applied on an incremental run
-    where 
-        {{var('touches_timestamp_field')}} > (select max(touch_timestamp) from {{ this }})
+    where
+        cast({{var('touches_timestamp_field')}} as timestamp) > (select max(touch_timestamp) from {{ this }})
     {% endif %}
 ),
 
@@ -36,7 +36,7 @@ touch_attributes as (
 raw_event_attributes as (
     select
         touch_events.{{var('touches_event_id_field')}} as touch_event_id,
-        touch_events.{{var('touches_timestamp_field')}} as touch_timestamp,
+        cast(touch_events.{{var('touches_timestamp_field')}} as timestamp) as touch_timestamp,
         touch_events.{{var('touches_user_id_field')}} as touch_user_id,
         touch_attributes.attribute as attribute,
         case
@@ -44,7 +44,7 @@ raw_event_attributes as (
             when touch_attributes.attribute = '{{ attribute[0] }}' then cast({{ attribute[0] }} as string)
         {% endfor %}
         end as value
-    
+
     from
         touch_events,  touch_attributes
 

@@ -36,7 +36,7 @@ input_touches_by_model as (
     select
         distinct_models.model_id,
         input_touches.input_touches
-    
+
     from
         input_touches, distinct_models
 ),
@@ -74,7 +74,7 @@ input_conversions_by_model as (
     select
         distinct_models.model_id,
         input_conversions.input_conversions
-    
+
     from
         input_conversions, distinct_models
 ),
@@ -120,7 +120,7 @@ conversion_share_by_model as (
     from
         {{ ref('tasman_mta__attributed_conversions') }}
     group by
-        model_id  
+        model_id
 ),
 
 run_details as (
@@ -134,7 +134,7 @@ run_details_by_model as (
         run_details.run_id,
         run_details.run_date,
         distinct_models.model_id
-    
+
     from
         run_details, distinct_models
 ),
@@ -152,38 +152,38 @@ joined_stats as (
         attributed_conversions_by_model.attributed_conversions,
         unattributed_conversions_by_model.unattributed_conversions,
         conversion_share_by_model.total_conversion_share
-    
+
     from
         run_details_by_model
-    
+
     left join
         input_touches_by_model
         on run_details_by_model.model_id = input_touches_by_model.model_id
-    
+
     left join
         filtered_touches_by_model
         on run_details_by_model.model_id = filtered_touches_by_model.model_id
-    
+
     left join
         attributed_touches_by_model
         on run_details_by_model.model_id = attributed_touches_by_model.model_id
-    
+
     left join
         input_conversions_by_model
         on run_details_by_model.model_id = input_conversions_by_model.model_id
-    
+
     left join
         filtered_conversions_by_model
         on run_details_by_model.model_id = filtered_conversions_by_model.model_id
-    
+
     left join
         attributed_conversions_by_model
         on run_details_by_model.model_id = attributed_conversions_by_model.model_id
-    
+
     left join
         unattributed_conversions_by_model
         on run_details_by_model.model_id = unattributed_conversions_by_model.model_id
-    
+
     left join
         conversion_share_by_model
         on run_details_by_model.model_id = conversion_share_by_model.model_id
@@ -207,7 +207,7 @@ calculated_stats as (
         unattributed_conversions,
         attributed_conversions/filtered_conversions as attribution_rate,
         total_conversion_share
-    
+
     from
         joined_stats
 )

@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [snowflake-ci, bigquery-ci]
+        target: [snowflake-ci, bigquery-ci, duckdb-ci]
     env:
       # Snowflake
       SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}

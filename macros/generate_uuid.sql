@@ -9,3 +9,7 @@
 {% macro bigquery__generate_uuid() %}
     generate_uuid()
 {% endmacro %}
+
+{% macro duckdb__generate_uuid() %}
+    uuid()
+{% endmacro %}

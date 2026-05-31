@@ -27,6 +27,26 @@ attribution_windows as (
     select * from {{ var('attribution_windows') }}
 ),
 
+-- For each conversion, find the timestamp of the immediately preceding conversion for the
+-- same user and model. This timestamp is the "session start" — only touches after it are
+-- considered fresh candidates for this conversion.
+conversions_with_session_start as (
+
+    select
+        conversion_user_id,
+        conversion_event_id,
+        conversion_timestamp,
+        model_id,
+        conversion_category,
+        lag(conversion_timestamp) over (
+            partition by conversion_user_id, model_id
+            order by conversion_timestamp
+        ) as prev_conversion_timestamp
+
+    from conversions
+
+),
+
 conversions_after_touches as (
 
     select
@@ -35,21 +55,32 @@ conversions_after_touches as (
         touches.touch_timestamp,
         touches.model_id,
         touches.touch_category,
-        conversions.conversion_event_id,
-        conversions.conversion_timestamp,
-        conversions.conversion_category
+        conversions_with_session_start.conversion_event_id,
+        conversions_with_session_start.conversion_timestamp,
+        conversions_with_session_start.conversion_category,
+        -- A touch is "fresh" for this conversion when it occurred after the preceding
+        -- conversion (i.e. within the current attribution session). When there is no
+        -- preceding conversion every touch is fresh by definition.
+        case
+            when conversions_with_session_start.prev_conversion_timestamp is null then true
+            when touches.touch_timestamp > conversions_with_session_start.prev_conversion_timestamp then true
+            else false
+        end as is_fresh_for_conversion
 
     from
         touches
-        inner join conversions
-            on
-                touches.touch_user_id = conversions.conversion_user_id
-                and touches.model_id = conversions.model_id
-                and touches.touch_timestamp < conversions.conversion_timestamp
+        inner join conversions_with_session_start
+            on touches.touch_user_id = conversions_with_session_start.conversion_user_id
+            and touches.model_id = conversions_with_session_start.model_id
+            and touches.touch_timestamp < conversions_with_session_start.conversion_timestamp
     where
         touches.touch_user_id is not null
+
 ),
 
+-- Keep fresh touches for each conversion. When no fresh touches exist (i.e. the conversion
+-- occurred immediately after another conversion with no intervening touch), fall back to
+-- the stale touches so the preceding marketing touchpoint still receives credit.
 matched_touches as (
 
     select distinct
@@ -58,21 +89,24 @@ matched_touches as (
         touch_timestamp,
         model_id,
         touch_category,
-        case
-            when conversion_category is not null
-            then first_value(conversion_event_id) over (partition by touch_user_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
-        end as conversion_event_id,
-        case
-            when conversion_category is not null
-            then first_value(conversion_timestamp) over (partition by touch_user_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
-        end as conversion_timestamp,
-        case
-            when conversion_category is not null
-            then first_value(conversion_category) over (partition by touch_user_id, touch_event_id, model_id, touch_category order by conversion_timestamp rows unbounded preceding)
-        end as conversion_category
+        conversion_event_id,
+        conversion_timestamp,
+        conversion_category
 
-    from
-        conversions_after_touches
+    from (
+        select
+            *,
+            sum(case when is_fresh_for_conversion then 1 else 0 end) over (
+                partition by touch_user_id, conversion_event_id, model_id
+            ) as fresh_touch_count
+
+        from conversions_after_touches
+    )
+
+    where
+        is_fresh_for_conversion
+        or fresh_touch_count = 0
+
 ),
 
 conversion_intervals as (
@@ -296,9 +330,10 @@ share_attribution as (
     select
         matched_groups.touch_user_id,
         matched_groups.touch_event_id,
+        matched_groups.conversion_event_id,
         matched_groups.model_id,
         matched_groups.spec,
-        conversion_shares.share / count(matched_groups.touch_event_id) over (partition by matched_groups.touch_user_id, matched_groups.model_id, matched_groups.spec) as conversion_share
+        conversion_shares.share / count(matched_groups.touch_event_id) over (partition by matched_groups.touch_user_id, matched_groups.conversion_event_id, matched_groups.model_id, matched_groups.spec) as conversion_share
 
     from
         matched_groups
@@ -312,6 +347,7 @@ attributed_events as (
         {{ generate_surrogate_key([
             'touch_events.model_id',
             'touch_events.touch_event_id',
+            'touch_events.conversion_event_id',
             'share_attribution.spec'
             ]) }} as surrogate_key,
         touch_events.*,
@@ -322,6 +358,7 @@ attributed_events as (
         touch_events
         left join share_attribution on
             touch_events.touch_event_id = share_attribution.touch_event_id
+            and touch_events.conversion_event_id = share_attribution.conversion_event_id
             and touch_events.model_id = share_attribution.model_id
 )
 

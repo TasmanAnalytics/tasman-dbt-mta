@@ -1,5 +1,6 @@
 select
     conversion_user_id,
+    conversion_event_id,
     model_id,
     sum(conversion_share) as total_conversion_share
 from
@@ -7,6 +8,7 @@ from
 
 group by
     conversion_user_id,
+    conversion_event_id,
     model_id
 
 having

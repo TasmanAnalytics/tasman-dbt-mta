@@ -20,5 +20,6 @@ tasman_integration_tests:
       threads: 4
     duckdb-ci:
       type: duckdb
-      path: '/tmp/tasman_mta_tests.duckdb'
+      path: ':memory:'
+      schema: main
       threads: 4

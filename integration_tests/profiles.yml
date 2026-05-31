@@ -18,3 +18,7 @@ tasman_integration_tests:
       dataset: "{{ env_var('BIGQUERY_DATASET') }}"
       location: "{{ env_var('BIGQUERY_LOCATION', 'EU') }}"
       threads: 4
+    duckdb-ci:
+      type: duckdb
+      path: '/tmp/tasman_mta_tests.duckdb'
+      threads: 4

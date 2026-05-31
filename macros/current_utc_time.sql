@@ -9,3 +9,7 @@
 {% macro bigquery__current_utc_time() %}
     current_timestamp()
 {% endmacro %}
+
+{% macro default__current_utc_time() %}
+    current_timestamp
+{% endmacro %}

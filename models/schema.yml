@@ -170,6 +170,11 @@ models:
         tests:
           - greater_than_zero
 
+      - name: conversion_number
+        description: "The sequential number of this conversion within the user's journey for this model, ordered by conversion timestamp. Use this to filter for first conversions (conversion_number = 1) or analyse repeat conversion behaviour."
+        tests:
+          - greater_than_zero
+
       - name: spec
         description: "The attribution spec that matched this conversion, as defined in the attribution rules seed."
 

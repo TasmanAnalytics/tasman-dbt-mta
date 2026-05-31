@@ -58,14 +58,17 @@ conversions_after_touches as (
         conversions_with_session_start.conversion_event_id,
         conversions_with_session_start.conversion_timestamp,
         conversions_with_session_start.conversion_category,
-        -- A touch is "fresh" for this conversion when it occurred after the preceding
-        -- conversion (i.e. within the current attribution session). When there is no
-        -- preceding conversion every touch is fresh by definition.
-        case
-            when conversions_with_session_start.prev_conversion_timestamp is null then true
-            when touches.touch_timestamp > conversions_with_session_start.prev_conversion_timestamp then true
-            else false
-        end as is_fresh_for_conversion
+        conversions_with_session_start.prev_conversion_timestamp,
+        -- Count of touches that are "fresh" for this conversion (occurred after the preceding
+        -- conversion). When zero, all touches fall back as candidates so the originating
+        -- touchpoint still receives credit for consecutive conversions with no intervening touch.
+        sum(case
+            when conversions_with_session_start.prev_conversion_timestamp is null then 1
+            when touches.touch_timestamp > conversions_with_session_start.prev_conversion_timestamp then 1
+            else 0
+        end) over (
+            partition by touches.touch_user_id, conversions_with_session_start.conversion_event_id, touches.model_id
+        ) as fresh_touch_count
 
     from
         touches
@@ -78,9 +81,6 @@ conversions_after_touches as (
 
 ),
 
--- Keep fresh touches for each conversion. When no fresh touches exist (i.e. the conversion
--- occurred immediately after another conversion with no intervening touch), fall back to
--- the stale touches so the preceding marketing touchpoint still receives credit.
 matched_touches as (
 
     select distinct
@@ -93,18 +93,12 @@ matched_touches as (
         conversion_timestamp,
         conversion_category
 
-    from (
-        select
-            *,
-            sum(case when is_fresh_for_conversion then 1 else 0 end) over (
-                partition by touch_user_id, conversion_event_id, model_id
-            ) as fresh_touch_count
-
-        from conversions_after_touches
-    )
+    from conversions_after_touches
 
     where
-        is_fresh_for_conversion
+        -- Fresh touch: occurred within the current attribution session
+        (prev_conversion_timestamp is null or touch_timestamp > prev_conversion_timestamp)
+        -- Fallback: no fresh touches exist, so carry the preceding touch forward
         or fresh_touch_count = 0
 
 ),
@@ -177,8 +171,11 @@ touch_events as (
         case
             when conversion_category is not null
             then rank() over (partition by conversion_event_id, model_id order by touch_timestamp desc)
-        end as convert_seq_down
-
+        end as convert_seq_down,
+        case
+            when conversion_category is not null
+            then rank() over (partition by touch_user_id, model_id order by conversion_timestamp)
+        end as conversion_number
 
     from
         windowed_touches

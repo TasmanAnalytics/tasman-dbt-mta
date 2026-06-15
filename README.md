@@ -65,7 +65,7 @@ Detailed configuration instructions can be found in the [Configuration Guide](do
 
 ## Engine Outputs 🔥
 
-The engine has two primary output models, attributed touches and attributed conversions.   
+The engine has two primary output models, attributed touches and attributed conversions.
 - [**`attributed_touches`**](models/tasman_mta__attributed_touches.sql) contains all filtered touch events (based on the touch rules) across all attribution models that have been attributed to a conversion. Where touch events have been attributed, there will be a `conversion_event_id` for that `touch_event_id`, as well as a conversion share value if appropriate.
 - [**`attributed_conversions`**](models/tasman_mta__attributed_conversions.sql) is the inverse of the attributed touches and contains all filtered conversions (based on the conversion rules) across all attribution models, whether or not they have been attributed to a touch. Each `conversion_event_id` may appear once or multiple times depending on the number of attributed touch events. Where `touch_event_id` is null, this indicates that the conversion is unattributed. This is the model that should be used in downstream models to analyse attribution performance.
 

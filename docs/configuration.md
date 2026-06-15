@@ -93,11 +93,11 @@ vars:
 
 **Variable Definitions:**
 
-- **`incremental`:** "true" or "false" depending on whether the model should run using incremental models or not  
-- **`touches_model`:** Reference to the model containing touch data points. This can be touches or sessions - [read more here](#touches-vs-sessions).  
-- **`touches_timestamp_field`:** Field within the `touches_model` that contains timestamps for each touch point. 
-  - Touches must occur in the past, and there are column tests throughout the package to validate this.  
-- **`touches_event_id_field`:** Field within the `touches_model` that contains a unique indentifier for each touch point  
+- **`incremental`:** "true" or "false" depending on whether the model should run using incremental models or not
+- **`touches_model`:** Reference to the model containing touch data points. This can be touches or sessions - [read more here](#touches-vs-sessions).
+- **`touches_timestamp_field`:** Field within the `touches_model` that contains timestamps for each touch point.
+  - Touches must occur in the past, and there are column tests throughout the package to validate this.
+- **`touches_event_id_field`:** Field within the `touches_model` that contains a unique indentifier for each touch point
 - **`touches_user_id_field`:** Field within the `touches_model` that contains the user identifier
 - **`conversions_model`:** Reference to the model containing conversion data points
 - **`conversions_timestamp_field`:** Field within the `conversions_model` that contains timestamps for each conversion.
@@ -134,7 +134,7 @@ Templated seed files (csvs) containing the required schema are included in the [
 
 **File**: `transformation/data/attribution/touch_rules.csv`
 
-These files contains rules that are used to filter touches for specific attribution models. 
+These files contains rules that are used to filter touches for specific attribution models.
 
 > **Important:** There needs to be at least 1 rule per model for that model to receive any touches (otherwise they are all filtered out).
 
@@ -189,7 +189,7 @@ w_shaped_30_days,all_channels,1,1,touch_channel,string,<>,''
 
 **File**: `transformation/data/attribution/conversion_rules.csv`
 
-These files contains rules that are used to filter conversions for specific attribution models. 
+These files contains rules that are used to filter conversions for specific attribution models.
 
 > **Important:** There needs to be at least 1 rule per model for that model to receive any conversions (otherwise they are all filtered out).
 
@@ -253,7 +253,7 @@ The attribution rules seed defines how touches are attributed to conversions for
 
 - **`model_id`** - Attribution model identifier
 - **`spec`** - Specification number (allows multiple attribution specs per model). Short for specification, each spec defines the rule set of a particular attribution model, and can be assigned a conversion share value. In the example above, it can be seen that 'single touch' models such as first touch and last touch only have 1 spec, whereas more complex multi-touch or multi-conversion models will have more than one spec.
-  
+
   > **Note:** Where a spec matches more than one touch, the conversion share is split equally between the touches.
 - **`rule`** - Rule number. Each rule is evaluated with OR logic.
 - **`part`** - Part number within a rule. Each rule part is considered with AND logic.
@@ -266,7 +266,7 @@ The attribution rules seed defines how touches are attributed to conversions for
   - `interval_pre`: Time in seconds between the touch and the touch preceding.
   - `interval_post`: Time in seconds between the touch and the touch following.
   - `interval_convert`: Time in seconds between the touch and the attributed conversion.
-  
+
   > The 'convert_seq' properties are used when the attribution rules are positional - such as first touch, last touch, u-shaped, w-shaped models.
   > The 'interval' properties are used when the attribution rules are time-based - such as a decay model.
 

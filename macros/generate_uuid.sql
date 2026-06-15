@@ -10,6 +10,6 @@
     generate_uuid()
 {% endmacro %}
 
-{% macro default__generate_uuid() %}
+{% macro duckdb__generate_uuid() %}
     uuid()
 {% endmacro %}

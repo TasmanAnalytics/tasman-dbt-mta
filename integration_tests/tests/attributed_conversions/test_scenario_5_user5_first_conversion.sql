@@ -13,8 +13,8 @@ where
     --success criteria
     and not (
         touch_event_id = '2ab3jfy0-7516-46d2-af13-fe0e309b997b'
-        or touch_user_id = 'user5@tasman.ai'
-        or convert_seq_up = 1
-        or conversion_category = 'purchase'
-        or touch_category = 'all_channels'
+        and touch_user_id = 'user5@tasman.ai'
+        and convert_seq_up = 1
+        and conversion_category = 'purchase'
+        and touch_category = 'all_channels'
     )

@@ -17,8 +17,8 @@ where
     --success criteria: attributed to last touch (direct channel)
     and not (
         touch_event_id = 'dff554e6-2f53-4eb1-a663-70d33658be63'
-        or touch_user_id = 'user3@tasman.ai'
-        or convert_seq_down = 1
-        or conversion_category = 'purchase'
-        or touch_category = 'all_channels'
+        and touch_user_id = 'user3@tasman.ai'
+        and convert_seq_down = 1
+        and conversion_category = 'purchase'
+        and touch_category = 'all_channels'
     )

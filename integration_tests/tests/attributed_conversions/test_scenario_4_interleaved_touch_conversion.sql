@@ -17,8 +17,8 @@ where
     --success criteria: attributed to touch2 (organic-search, Nov 3), not touch1
     and not (
         touch_event_id = 'a1b2c3d4-0002-0000-0000-000000000002'
-        or touch_user_id = 'user6@tasman.ai'
-        or convert_seq_up = 1
-        or conversion_category = 'purchase'
-        or touch_category = 'all_channels'
+        and touch_user_id = 'user6@tasman.ai'
+        and convert_seq_up = 1
+        and conversion_category = 'purchase'
+        and touch_category = 'all_channels'
     )

@@ -93,7 +93,7 @@ models:
     description: "This model contains all touches that have been successfully attributed to a conversion. There is at least 1 row per conversion per model"
     columns:
       - name: surrogate_key
-        description: "A unique key for the table, generated from the hash of the model ID, touch event ID, and attribution spec"
+        description: "A unique key for the table, generated from the hash of the model ID, touch event ID, conversion event ID, and attribution spec"
         tests:
           - not_null
           - unique
@@ -167,6 +167,11 @@ models:
 
       - name: convert_seq_down
         description: "The consecutive touch number based on the timestamp descending."
+        tests:
+          - greater_than_zero
+
+      - name: conversion_number
+        description: "The sequential number of this conversion within the user's journey for this model, ordered by conversion timestamp. Use this to filter for first conversions (conversion_number = 1) or analyse repeat conversion behaviour."
         tests:
           - greater_than_zero
 

@@ -4,3 +4,6 @@ event,event_timestamp,user,type
 da9360ef-f52e-4572-aa98-128c17d97a41,2022-06-07 07:08:37,user3@tasman.ai,lead
 be62daba-e4d2-4998-a057-8a3b25f2e9e3,2022-06-17 06:48:26,user3@tasman.ai,purchase
 3olgh3bs-05hf-40bd-a5b8-2cfc77457903,2024-09-12 11:31:37,user5@tasman.ai,purchase
+3olgh3bs-05hf-40bd-a5b8-2cfc77457904,2024-09-12 23:00:00,user5@tasman.ai,purchase
+a1b2c3d4-0010-0000-0000-000000000010,2024-11-02 10:00:00,user6@tasman.ai,purchase
+a1b2c3d4-0020-0000-0000-000000000020,2024-11-04 10:00:00,user6@tasman.ai,purchase

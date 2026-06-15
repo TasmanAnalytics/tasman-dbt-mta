@@ -9,10 +9,10 @@ where
     --success criteria
     and not (
         touch_event_id = 'cb3a11ab-61ae-4e09-a1c6-8a49c44aa6ae'
-        or touch_user_id = 'user1@tasman.ai'
-        or convert_touch_count = 3
-        or convert_seq_up = 1
-        or convert_seq_down = 3
-        or conversion_category = 'purchase'
-        or touch_category = 'all_channels'
+        and touch_user_id = 'user1@tasman.ai'
+        and convert_touch_count = 3
+        and convert_seq_up = 1
+        and convert_seq_down = 3
+        and conversion_category = 'purchase'
+        and touch_category = 'all_channels'
     )
